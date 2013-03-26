@@ -1,0 +1,133 @@
+<?php
+/*
+Plugin Name: Simple Twit
+Plugin URI: http://www.golden-tech.com
+Description: This is a simple plugin that enables you to pull in and cache a Twitter feed.
+Version: 0.1
+Author: George Yates
+Author URI: http://www.georgeyatesiii.com
+License: GPL
+*/
+
+require 'lib/tweet-post-type.php';
+require 'lib/make_request.php';
+
+function get_tweets($num = 5) {
+	$args = array(
+		'post_type' => 'tweet',
+		'numberposts' => 5
+	);
+	$raw_tweets = get_posts($args);
+
+	$tweets = array();
+
+	foreach ($raw_tweets as $raw_tweet) {
+		$tweet = new stdClass();
+
+		$tweet->post_id = $raw_tweet->ID;
+		$tweet->content = $raw_tweet->post_content;
+		$tweet->time = $raw_tweet->post_date;
+		$tweet->time_txt = parseTwitterDate($raw_tweet->post_date);
+
+		$tweets[] = $tweet;
+	}
+
+	return $tweets;
+}
+
+function parseTwitterDate($date, $large_date=false)
+{
+	if(!$large_date)
+		$large_date = date('Y-m-d h:i:s');
+
+	$n = strtotime($large_date) - strtotime($date);
+
+	if($n <= 1) return 'less than 1 second ago';
+	if($n < (60)) return $n . ' seconds ago';
+	if($n < (60*60)) { $minutes = round($n/60); return 'about ' . $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago'; }
+	if($n < (60*60*16)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+	if($n < (time() - strtotime('yesterday'))) return 'yesterday';
+	if($n < (60*60*24)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+	if($n < (60*60*24*6.5)) return 'about ' . round($n/(60*60*24)) . ' days ago';
+	if($n < (time() - strtotime('last week'))) return 'last week';
+	if(round($n/(60*60*24*7))  == 1) return 'about a week ago';
+	if($n < (60*60*24*7*3.5)) return 'about ' . round($n/(60*60*24*7)) . ' weeks ago';
+	if($n < (time() - strtotime('last month'))) return 'last month';
+	if(round($n/(60*60*24*7*4))  == 1) return 'about a month ago';
+	if($n < (60*60*24*7*4*11.5)) return 'about ' . round($n/(60*60*24*7*4)) . ' months ago';
+	if($n < (time() - strtotime('last year'))) return 'last year';
+	if(round($n/(60*60*24*7*52)) == 1) return 'about a year ago';
+	if($n >= (60*60*24*7*4*12)) return 'about ' . round($n/(60*60*24*7*52)) . ' years ago';
+	return false;
+}
+
+/**
+ * Setting Up Import on Plugin Install
+ */
+add_filter( 'cron_schedules', 'cron_add_fifteen' );
+function cron_add_fifteen( $schedules ) {
+	// Adds once weekly to the existing schedules.
+	$schedules['fifteen'] = array(
+		'interval' => 60*15,
+		'display' => 'Every Fifteen Minutes'
+	);
+	return $schedules;
+}
+
+add_action('tweet_import', 'import_tweets');
+function import_tweets() {
+	$raw_tweets = get_api_tweets(false, get_option('last_tweet'));
+	if (!empty($raw_tweets))
+		input_tweets($raw_tweets);
+}
+
+function input_tweets($tweets) {
+	$tmhUtil = new tmhUtilities();
+
+	foreach ($tweets as $tweet) {
+		$post = array();
+
+		$post['post_title'] = $tweet['id_str'];
+		$post['post_content'] = $tmhUtil->entify($tweet);
+		$post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
+		$post['post_type'] = 'tweet';
+
+		$post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
+		$post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
+
+		$post['post_date'] = $post_date->format('Y-m-d H:i:s');
+		$post['post_status'] = 'publish';
+
+		$id = wp_insert_post($post);
+		update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
+	}
+
+	if (isset($tweets[0]['id']))
+		update_option('last_tweet', intval($tweets[0]['id']));
+}
+
+register_deactivation_hook(__FILE__, 'stf_deactivation');
+function stf_deactivation() {
+	wp_clear_scheduled_hook('tweet_import');
+}
+
+register_activation_hook(__FILE__, 'stf_activation');
+function stf_activation() {
+	wp_schedule_event(time(), 'fifteen', 'tweet_import');
+
+	add_option('last_tweet', 0);
+	input_tweets(get_api_tweets(50));
+}
+
+if (!function_exists('safe_serialize')) {
+	function safe_serialize($var) {
+		return base64_encode(serialize($var));
+	}
+}
+
+if ( !function_exists('safe_unserialize') ) {
+	function safe_unserialize($var) {
+		return unserialize(base64_decode($var));
+	}
+}
+?>
