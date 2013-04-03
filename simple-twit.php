@@ -35,32 +35,6 @@ function get_tweets($num = 5) {
 	return $tweets;
 }
 
-function parseTwitterDate($date, $large_date=false)
-{
-	if(!$large_date)
-		$large_date = date('Y-m-d h:i:s');
-
-	$n = strtotime($large_date) - strtotime($date);
-
-	if($n <= 1) return 'less than 1 second ago';
-	if($n < (60)) return $n . ' seconds ago';
-	if($n < (60*60)) { $minutes = round($n/60); return 'about ' . $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago'; }
-	if($n < (60*60*16)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
-	if($n < (time() - strtotime('yesterday'))) return 'yesterday';
-	if($n < (60*60*24)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
-	if($n < (60*60*24*6.5)) return 'about ' . round($n/(60*60*24)) . ' days ago';
-	if($n < (time() - strtotime('last week'))) return 'last week';
-	if(round($n/(60*60*24*7))  == 1) return 'about a week ago';
-	if($n < (60*60*24*7*3.5)) return 'about ' . round($n/(60*60*24*7)) . ' weeks ago';
-	if($n < (time() - strtotime('last month'))) return 'last month';
-	if(round($n/(60*60*24*7*4))  == 1) return 'about a month ago';
-	if($n < (60*60*24*7*4*11.5)) return 'about ' . round($n/(60*60*24*7*4)) . ' months ago';
-	if($n < (time() - strtotime('last year'))) return 'last year';
-	if(round($n/(60*60*24*7*52)) == 1) return 'about a year ago';
-	if($n >= (60*60*24*7*4*12)) return 'about ' . round($n/(60*60*24*7*52)) . ' years ago';
-	return false;
-}
-
 /**
  * Setting Up Import on Plugin Install
  */
@@ -106,19 +80,72 @@ function input_tweets($tweets) {
 		update_option('last_tweet', intval($tweets[0]['id']));
 }
 
+/**
+ * Clearing the Cron on Plugin Deactivation
+ */
 register_deactivation_hook(__FILE__, 'stf_deactivation');
 function stf_deactivation() {
 	wp_clear_scheduled_hook('tweet_import');
 }
 
+/**
+ * Adding in Cron on Plugin Activation, adding in plugin options and importing the first 50 tweets of each author
+ */
 register_activation_hook(__FILE__, 'stf_activation');
 function stf_activation() {
 	wp_schedule_event(time(), 'fifteen', 'tweet_import');
 
-	add_option('last_tweet', 0);
+	// Adding Initial Options for Plugin
+	add_option('st_last_tweet', 0);
+	add_option('st_consumer_key', '');
+	add_option('st_consumer_secret', '');
+	add_option('st_user_token', '');
+	add_option('st_user_secret', '');
+	add_option('st_twits', safe_serialize(array()));
+
 	input_tweets(get_api_tweets(50));
 }
 
+/**
+ * Helper Functions
+ */
+
+/**
+ * Parse a provided date into a string similar to how Twitter represents its dates
+ *
+ * @param DateTime $date The date of the tweet
+ * @param DateTime $large_date [optional] The date to compare the tweet to, to generate the string, defaults to the current date
+ * @return string on success or boolean on failure
+ */
+function parseTwitterDate($date, $large_date=false)
+{
+	if(!$large_date)
+		$large_date = date('Y-m-d h:i:s');
+
+	$n = strtotime($large_date) - strtotime($date);
+
+	if($n <= 1) return 'less than 1 second ago';
+	if($n < (60)) return $n . ' seconds ago';
+	if($n < (60*60)) { $minutes = round($n/60); return 'about ' . $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago'; }
+	if($n < (60*60*16)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+	if($n < (time() - strtotime('yesterday'))) return 'yesterday';
+	if($n < (60*60*24)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+	if($n < (60*60*24*6.5)) return 'about ' . round($n/(60*60*24)) . ' days ago';
+	if($n < (time() - strtotime('last week'))) return 'last week';
+	if(round($n/(60*60*24*7))  == 1) return 'about a week ago';
+	if($n < (60*60*24*7*3.5)) return 'about ' . round($n/(60*60*24*7)) . ' weeks ago';
+	if($n < (time() - strtotime('last month'))) return 'last month';
+	if(round($n/(60*60*24*7*4))  == 1) return 'about a month ago';
+	if($n < (60*60*24*7*4*11.5)) return 'about ' . round($n/(60*60*24*7*4)) . ' months ago';
+	if($n < (time() - strtotime('last year'))) return 'last year';
+	if(round($n/(60*60*24*7*52)) == 1) return 'about a year ago';
+	if($n >= (60*60*24*7*4*12)) return 'about ' . round($n/(60*60*24*7*52)) . ' years ago';
+	return false;
+}
+
+/**
+ * Serialize and Unserialize data safely to avoid offset errors
+ */
 if (!function_exists('safe_serialize')) {
 	function safe_serialize($var) {
 		return base64_encode(serialize($var));

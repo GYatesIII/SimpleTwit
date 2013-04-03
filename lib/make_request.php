@@ -12,20 +12,20 @@ License: GPL
 require 'tmhOAuth.php';
 require 'tmhUtilities.php';
 
-define('CONSUMER_KEY', 'nZmplnVJQS8iSU4SQjrA');
-define('CONSUMER_SECRET', 'E4wtsKyLgckQa3i4ZBt8TrrGdNtFziO9d7i0APZzRI');
-define('USER_TOKEN', '1284087823-nP1WlQazKCkXhPwr3Y4j3p18XCcbzbIYLDz0zEd');
-define('USER_SECRET', 'origind7TeNCTWYSn6bR6p5Y9iEzdkQCEJ7UEZQ860');
+define('CONSUMER_KEY', 'demo');
+define('CONSUMER_SECRET', 'demo');
+define('USER_TOKEN', 'demo');
+define('USER_SECRET', 'demo');
 
-define('SCREEN_NAME', 'Milt_Rosenberg');
+define('SCREEN_NAME', 'GeorgeYatesIII');
 
 function get_api_tweets($limit = 20, $since = 0) {
 
 	$config = array(
-		'consumer_key' => CONSUMER_KEY,
-		'consumer_secret' => CONSUMER_SECRET,
-		'user_token' => USER_TOKEN,
-		'user_secret' => USER_SECRET
+		'consumer_key' => get_option('st_consumer_key'),
+		'consumer_secret' => get_option('st_consumer_secret'),
+		'user_token' => get_option('st_user_token'),
+		'user_secret' => get_option('st_user_secret')
 	);
 	$auth = new tmhOAuth($config);
 

@@ -1,29 +1,35 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of st-tweet
  *
- * @author gyates
+ * @author George Yates
  */
+require_once 'lib/thmUtilities.php';
+
 class st_tweet {
 	private $wp_post;
 
-	public $wp_id = $id;
+	public $wp_id;
 	public $is_retweet;
+	public $is_response;
+	public $content;
+	public $time;
+	public $time_str;
 
 	function __construct($id = 0) {
-		$wp_id = $id;
-		$wp_post = get_post($id);
+		$this->wp_id = $id;
 
-		$is_retweet = get_postmeta('', $wp_id);
-		$is_favorite = get_postmeta('', $wp_id);
+		$this->wp_post = get_post($this->id);
+
+		$this->is_retweet = get_postmeta('', $this->wp_id);
+		$this->is_response = get_postmeta('', $this->wp_id);
+
+		$this->content = $this->wp_post->post_content;
+		$this->time = $this->wp_post->post_date;
+
+
 	}
 
-	
+
 }
 ?>
