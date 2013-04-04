@@ -97,15 +97,15 @@ function stf_activation() {
 	wp_schedule_event(time(), 'fifteen', 'tweet_import');
 
 	// Adding Initial Options for Plugin
-	add_option('st_last_tweet', 0);
 	$init_options = array (
 			'consumer_key' => '',
 			'consumer_secret' => '',
 			'user_token' => '',
 			'user_secret' => ''
 		);
-	add_option('st_init_options', safe_serialize($init_options));
+	add_option('st_auth_creds', safe_serialize($init_options));
 	add_option('st_twits', safe_serialize(array('GeorgeYatesIII')));
+	add_option('st_last_tweet', 0);
 }
 
 /**
