@@ -12,8 +12,6 @@ License: GPL
 require 'tmhOAuth.php';
 require 'tmhUtilities.php';
 
-define('SCREEN_NAME', 'GeorgeYatesIII');
-
 function get_api_tweets($limit = 20, $since = 0) {
 	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
 
@@ -31,7 +29,7 @@ function get_api_tweets($limit = 20, $since = 0) {
 	$method = 'GET';
 	$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 	$params = array(
-		'screen_name' => SCREEN_NAME,
+		'screen_name' => get_option('st_twit'),
 		'include_rts' => false,
 		'exclude_replies' => true
 	);

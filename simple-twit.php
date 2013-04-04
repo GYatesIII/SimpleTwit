@@ -104,7 +104,7 @@ function stf_activation() {
 			'user_secret' => ''
 		);
 	add_option('st_auth_creds', safe_serialize($init_options));
-	add_option('st_twits', safe_serialize(array('GeorgeYatesIII')));
+	add_option('st_twit', 'GeorgeYatesIII');
 	add_option('st_last_tweet', 0);
 }
 
