@@ -13,7 +13,7 @@ function st_options_setup() {
 	add_settings_section('st_auth_creds_section', 'OAuth Credentials', 'st_auth_creds_explain', 'st-twit-feed');
 
 	// Username Field
-	add_settings_field('st_twits_fields', 'Twitter Feeds Fields', 'st_twits_fields', 'st-twit-feed', 'st_twits_section');
+	add_settings_field('st_twits_fields', 'Usernames', 'st_twits_fields', 'st-twit-feed', 'st_twits_section');
 
 	// OAuth Creds Fields
 	add_settings_field('st_consumer_key_field', 'Consumer Key', 'st_auth_consumer_key', 'st-twit-feed', 'st_auth_creds_section');
@@ -27,6 +27,20 @@ function st_options_setup() {
 // Displays the explanation text for the twitter username
 function st_twits_explain() {
 	echo 'These are the usernames that will be pulled into this feed. Ideally, this shouldn\'t be more than ten users.';
+}
+function st_twits_fields() {
+	// @todo The function to display the
+}
+function st_edit_twits($input) {
+	// @todo The function to take in the array data and put it into one option
+}
+
+/**
+ * All the functions associated with the OAuth Creds
+ */
+// Displays the explanation text for the authentication section
+function st_auth_creds_explain() {
+	echo 'These are the OAuth credentials for Twitter. <a href="https://dev.twitter.com/docs/auth/authorizing-request" target="_blank">How do I generate these?</a>';
 }
 // Displays the fields for the twitter feeds
 function st_auth_consumer_key() {
@@ -56,18 +70,6 @@ function st_edit_auth_creds($input) {
 	$creds = wp_parse_args($input, $defaults);
 
 	return safe_serialize($creds);
-}
-
-/**
- * All the functions associated with the OAuth Creds
- */
-// Displays the explanation text for the authentication section
-function st_auth_creds_explain() {
-	echo 'These are the OAuth credentials for Twitter. <a href="https://dev.twitter.com/docs/auth/authorizing-request" target="_blank">How do I generate these?</a>';
-}
-// Displays the
-function st_auth_creds_fields() {
-	// @todo Displays the fields for the auth credentials
 }
 
 /**

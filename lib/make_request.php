@@ -18,11 +18,14 @@ function get_api_tweets($limit = 20, $since = 0) {
 	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
 
 	$config = array(
-		'consumer_key' => $st_auth_creds['st_consumer_key'],
-		'consumer_secret' => $st_auth_creds['st_consumer_secret'],
-		'user_token' => $st_auth_creds['st_user_token'],
-		'user_secret' => $st_auth_creds['st_user_secret']
+		'consumer_key' => $st_auth_creds['consumer_key'],
+		'consumer_secret' => $st_auth_creds['consumer_secret'],
+		'user_token' => $st_auth_creds['user_token'],
+		'user_secret' => $st_auth_creds['user_secret']
 	);
+
+	var_dump($config);
+
 	$auth = new tmhOAuth($config);
 
 	$method = 'GET';
