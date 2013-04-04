@@ -6,14 +6,14 @@ function st_submenu_page() {
 
 add_action('admin_init', 'st_options_setup');
 function st_options_setup() {
-	register_setting('st_options_group', 'st_twits', 'st_edit_twits');
+	register_setting('st_options_group', 'st_twit');
 	register_setting('st_options_group', 'st_auth_creds', 'st_edit_auth_creds');
 
 	add_settings_section('st_twits_section', 'Twitter Feeds', 'st_twits_explain', 'st-twit-feed');
 	add_settings_section('st_auth_creds_section', 'OAuth Credentials', 'st_auth_creds_explain', 'st-twit-feed');
 
 	// Username Field
-	add_settings_field('st_twits_fields', 'Usernames', 'st_twits_fields', 'st-twit-feed', 'st_twits_section');
+	add_settings_field('st_twits_fields', 'Username', 'st_twits_fields', 'st-twit-feed', 'st_twits_section');
 
 	// OAuth Creds Fields
 	add_settings_field('st_consumer_key_field', 'Consumer Key', 'st_auth_consumer_key', 'st-twit-feed', 'st_auth_creds_section');
@@ -30,15 +30,7 @@ function st_twits_explain() {
 }
 // Displays the username entry and deletion structure
 function st_twits_fields() {
-	$twits = safe_unserialize(get_option('st_twits', safe_serialize(array())));
-
-	if ($twits !== false && !empty($twits)) {
-		$tab = new WP_List_Table();
-	} else {
-	}
-}
-function st_edit_twits($input) {
-	// @todo The function to take in the array data and put it into one option
+	echo '<input type="text" value="' . get_option('st_twit') . '" name="st_twit" class="regular-text" id="st_twits_fields">';
 }
 
 /**
