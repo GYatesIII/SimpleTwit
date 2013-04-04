@@ -101,9 +101,7 @@ function stf_activation() {
 	add_option('st_consumer_secret', '');
 	add_option('st_user_token', '');
 	add_option('st_user_secret', '');
-	add_option('st_twits', safe_serialize(array()));
-
-	input_tweets(get_api_tweets(50));
+	add_option('st_twits', safe_serialize(array('GeorgeYatesIII')));
 }
 
 /**
