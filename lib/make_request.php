@@ -30,15 +30,19 @@ function get_api_tweets($limit = 20, $since = 0) {
 	$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 	$params = array(
 		'screen_name' => get_option('st_twit'),
-		'include_rts' => false,
-		'exclude_replies' => true
+		'include_rts' => 'true',
+		'exclude_replies' => 'false'
 	);
 
-	if ($limit != false)
+	if ($limit != 0)
 		$params['count'] = $limit;
+	else
+		$params['count'] = 199;
 
 	if ($since != 0)
 		$params['since_id'] = $since;
+	else
+		$params['sinde_id'] = 0;
 
 	$auth->request($method, $url, $params);
 	return json_decode($auth->response['response'], true);
