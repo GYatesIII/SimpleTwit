@@ -10,6 +10,7 @@ License: GPL
 */
 
 require 'lib/tweet-post-type.php';
+require 'lib/twit-post-type.php';
 require 'lib/make_request.php';
 require 'options-page.php';
 

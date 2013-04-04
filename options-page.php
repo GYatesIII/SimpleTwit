@@ -28,8 +28,14 @@ function st_options_setup() {
 function st_twits_explain() {
 	echo 'These are the usernames that will be pulled into this feed. Ideally, this shouldn\'t be more than ten users.';
 }
+// Displays the username entry and deletion structure
 function st_twits_fields() {
-	// @todo The function to display the
+	$twits = safe_unserialize(get_option('st_twits', safe_serialize(array())));
+
+	if ($twits !== false && !empty($twits)) {
+		$tab = new WP_List_Table();
+	} else {
+	}
 }
 function st_edit_twits($input) {
 	// @todo The function to take in the array data and put it into one option
@@ -76,6 +82,6 @@ function st_edit_auth_creds($input) {
  * The function that calls the options page
  */
 function st_options_page() {
-	include 'lib/options-template.php';
+	include 'views/options-template.php';
 }
 ?>

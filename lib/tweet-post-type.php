@@ -1,9 +1,9 @@
 <?php
-add_action('init', 'stf_tweet_type');
-function stf_tweet_type() {
+add_action('init', 'st_tweet_type');
+function st_tweet_type() {
 	register_post_type('tweet', array(
 			'label' => 'Tweet',
-			'description' => 'Shows for Milt Rosenberg, turned into a Podcast feed too',
+			'description' => 'Tweets pulled from Twitter',
 			'public' => true,
 			'supports' => array('editor'),
 			'has_archive' => 'tweet',
