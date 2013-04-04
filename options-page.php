@@ -30,16 +30,32 @@ function st_twits_explain() {
 }
 // Displays the fields for the twitter feeds
 function st_auth_consumer_key() {
-	echo "CONSUMER KEY";
+	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
+	echo '<input type="text" value="'. $st_auth_creds['consumer_key'] .'" name="st_auth_creds[consumer_key]" class="regular-text code" id="st_consumer_key_field">';
 }
 function st_auth_consumer_secret() {
-	echo "CONSUMER SECRET";
+	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
+	echo '<input type="text" value="'. $st_auth_creds['consumer_secret'] .'" name="st_auth_creds[consumer_secret]" class="regular-text code" id="st_consumer_secret_field">';
 }
 function st_auth_user_token() {
-	echo "USER TOKEN";
+	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
+	echo '<input type="text" value="'. $st_auth_creds['user_token'] .'" name="st_auth_creds[user_token]" class="regular-text code" id="st_user_token_field">';
 }
 function st_auth_user_secret() {
-	echo "USER SECRET";
+	$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
+	echo '<input type="text" value="'. $st_auth_creds['user_secret'] .'" name="st_auth_creds[user_secret]" class="regular-text code" id="st_user_secret_field">';
+}
+
+function st_edit_auth_creds($input) {
+	$defaults = array(
+		'consumer_key' => '',
+		'consumer_secret' => '',
+		'user_token' => '',
+		'user_secret' => ''
+		);
+	$creds = wp_parse_args($input, $defaults);
+
+	return safe_serialize($creds);
 }
 
 /**
