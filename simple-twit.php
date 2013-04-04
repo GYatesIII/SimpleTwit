@@ -11,6 +11,7 @@ License: GPL
 
 require 'lib/tweet-post-type.php';
 require 'lib/make_request.php';
+require 'options-page.php';
 
 function get_tweets($num = 5) {
 	$args = array(
@@ -97,10 +98,13 @@ function stf_activation() {
 
 	// Adding Initial Options for Plugin
 	add_option('st_last_tweet', 0);
-	add_option('st_consumer_key', '');
-	add_option('st_consumer_secret', '');
-	add_option('st_user_token', '');
-	add_option('st_user_secret', '');
+	$init_options = array (
+			'consumer_key' => '',
+			'consumer_secret' => '',
+			'user_token' => '',
+			'user_secret' => ''
+		);
+	add_option('st_init_options', safe_serialize($init_options));
 	add_option('st_twits', safe_serialize(array('GeorgeYatesIII')));
 }
 
