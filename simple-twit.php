@@ -58,7 +58,7 @@ function import_tweets() {
 
 function input_tweets($tweets) {
 	$tmhUtil = new tmhUtilities();
-
+	
 	foreach ($tweets as $tweet) {
 		$post = array();
 
@@ -68,16 +68,17 @@ function input_tweets($tweets) {
 		$post['post_type'] = 'tweet';
 
 		$post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
-		$post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
+		$timezone = get_option('timezone_string');
+		if (!empty($timezone))
+			$post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
 
 		$post['post_date'] = $post_date->format('Y-m-d H:i:s');
 		$post['post_status'] = 'publish';
 
 		$id = wp_insert_post($post);
 		update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
-		update_post_meta($id, 'is_retweet',  $tweet['retweeted_status'] !== NULL);
-		update_post_meta($id, 'is_reply', $tweet['in_reply_to_status_id'] !== NULL);
-		
+		update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL);
+		update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL);
 	}
 
 	if (isset($tweets[0]['id']))
