@@ -22,8 +22,6 @@ function get_api_tweets($limit = 20, $since = 0) {
 		'user_secret' => $st_auth_creds['user_secret']
 	);
 
-	var_dump($config);
-
 	$auth = new tmhOAuth($config);
 
 	$method = 'GET';

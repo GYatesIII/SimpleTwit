@@ -75,6 +75,9 @@ function input_tweets($tweets) {
 
 		$id = wp_insert_post($post);
 		update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
+		update_post_meta($id, 'is_retweet',  $tweet['retweeted_status'] !== NULL);
+		update_post_meta($id, 'is_reply', $tweet['in_reply_to_status_id'] !== NULL);
+		
 	}
 
 	if (isset($tweets[0]['id']))
