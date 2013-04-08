@@ -12,7 +12,7 @@ class ST_Tweet {
 	private $raw_tweet;
 
 	public $is_retweet;
-	public $is_response;
+	public $is_reply;
 	public $content;
 	public $time;
 	public $time_gmt;
@@ -25,7 +25,7 @@ class ST_Tweet {
 			$this->raw_tweet = safe_unserialize(get_post_meta($this->wp_id, 'raw_tweet', safe_serialize(array())));
 
 			$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1 ? true : false;
-			$this->is_response = get_post_meta($this->wp_id, 'is_reply', true) == 1 ? true : false;
+			$this->is_reply= get_post_meta($this->wp_id, 'is_reply', true) == 1 ? true : false;
 
 			$this->content = $this->wp_post->post_content;
 
@@ -66,8 +66,8 @@ class ST_Tweet {
 		}
 	}
 
-	public function get_response_info() {
-		if ($this->is_response) {
+	public function get_reply_info() {
+		if ($this->is_reply) {
 			$info = new stdClass();
 
 			$info->status_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'] . "/status/" . $this->raw_tweet['in_reply_to_status_id'];

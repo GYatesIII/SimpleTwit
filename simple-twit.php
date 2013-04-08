@@ -14,11 +14,26 @@ require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'st_tweet.php';
 
-function get_tweets($num = 5) {
+function get_tweets($num = 5, $retweets = true, $replies = true) {
+	$meta_query = array();
+	if ($retweets === false) {
+		$meta_query[] = array(
+			'key' => 'is_retweet',
+			'value' => 0
+			);
+	}
+	if ($replies === false) {
+		$meta_query[] = array(
+			'key' => 'is_reply',
+			'value' => 0
+			);
+	}
 	$args = array(
 		'post_type' => 'tweet',
-		'numberposts' => $num
-	);
+		'numberposts' => $num,
+		'meta_query' => $meta_query
+		);
+
 	$raw_tweets = get_posts($args);
 
 	$tweets = array();
@@ -73,8 +88,8 @@ function input_tweets($tweets) {
 
 		$id = wp_insert_post($post);
 		update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
-		update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL);
-		update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL);
+		update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL ? 1 : 0);
+		update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL ? 1 : 0);
 	}
 
 	if (isset($tweets[0]['id']))
