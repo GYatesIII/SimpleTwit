@@ -9,9 +9,10 @@ Author URI: http://www.georgeyatesiii.com
 License: GPL
 */
 
-require 'lib/tweet-post-type.php';
-require 'lib/make_request.php';
-require 'options-page.php';
+require_once 'lib/tweet-post-type.php';
+require_once 'lib/make_request.php';
+require_once 'options-page.php';
+require_once 'st_tweet.php';
 
 function get_tweets($num = 5) {
 	$args = array(
@@ -23,12 +24,7 @@ function get_tweets($num = 5) {
 	$tweets = array();
 
 	foreach ($raw_tweets as $raw_tweet) {
-		$tweet = new stdClass();
-
-		$tweet->post_id = $raw_tweet->ID;
-		$tweet->content = $raw_tweet->post_content;
-		$tweet->time = $raw_tweet->post_date;
-		$tweet->time_txt = parseTwitterDate($raw_tweet->post_date);
+		$tweet = new ST_Tweet($raw_tweet->ID);
 
 		$tweets[] = $tweet;
 	}

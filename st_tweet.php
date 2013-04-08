@@ -4,9 +4,9 @@
  *
  * @author George Yates
  */
-require_once 'lib/thmUtilities.php';
+require_once 'lib/tmhUtilities.php';
 
-class st_tweet {
+class ST_Tweet {
 	private $wp_post;
 
 	public $wp_id;
@@ -19,15 +19,13 @@ class st_tweet {
 	function __construct($id = 0) {
 		$this->wp_id = $id;
 
-		$this->wp_post = get_post($this->id);
-
-		$this->is_retweet = get_postmeta('', $this->wp_id);
-		$this->is_response = get_postmeta('', $this->wp_id);
+		$this->wp_post = get_post($this->wp_id);
+		
+		$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1;
+		$this->is_response = get_post_meta($this->wp_id, 'is_reply', true) == 1;
 
 		$this->content = $this->wp_post->post_content;
 		$this->time = $this->wp_post->post_date;
-
-
 	}
 
 
