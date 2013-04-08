@@ -17,7 +17,7 @@ require_once 'st_tweet.php';
 function get_tweets($num = 5) {
 	$args = array(
 		'post_type' => 'tweet',
-		'numberposts' => 5
+		'numberposts' => $num
 	);
 	$raw_tweets = get_posts($args);
 
@@ -54,7 +54,7 @@ function import_tweets() {
 
 function input_tweets($tweets) {
 	$tmhUtil = new tmhUtilities();
-	
+
 	foreach ($tweets as $tweet) {
 		$post = array();
 

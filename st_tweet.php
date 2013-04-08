@@ -7,8 +7,9 @@
 require_once 'lib/tmhUtilities.php';
 
 class ST_Tweet {
-	private $wp_post;
 	private $wp_id;
+	private $wp_post;
+	private $raw_tweet;
 
 	public $is_retweet;
 	public $is_response;
@@ -18,27 +19,65 @@ class ST_Tweet {
 	public $time_str;
 
 	function __construct($id = 0) {
-		$this->wp_id = $id;
+		if ($id != 0) {
+			$this->wp_id = $id;
+			$this->wp_post = get_post($this->wp_id);
+			$this->raw_tweet = safe_unserialize(get_post_meta($this->wp_id, 'raw_tweet', safe_serialize(array())));
 
-		$this->wp_post = get_post($this->wp_id);
+			$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1 ? true : false;
+			$this->is_response = get_post_meta($this->wp_id, 'is_reply', true) == 1 ? true : false;
 
-		$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1;
-		$this->is_response = get_post_meta($this->wp_id, 'is_reply', true) == 1;
+			$this->content = $this->wp_post->post_content;
 
-		$this->content = $this->wp_post->post_content;
-		$this->time = $this->wp_post->post_date;
-		$this->time_gmt = $this->wp_post->post_date_gmt;
-		$this->time_str = $this->get_default_time_str();
+			$this->time = $this->wp_post->post_date;
+			$this->time_gmt = $this->wp_post->post_date_gmt;
+			$this->time_str = $this->get_default_time_str();
+		}
 	}
 
-	private function get_default_time_str() {
+	public function get_default_time_str($time_gmt = false) {
+		if ($time_gmt === false) $time_gmt = $this->time_gmt;
+
 		$tz = new DateTimeZone(get_option('timezone_string', 'GMT'));
 		$time = new DateTime();
-		$time = setTimestamp($this->time_gmt);
+		$time = $time->setTimestamp(strtotime($this->time_gmt));
 		$time = $time->setTimezone($tz);
 		return parseTwitterDate($time->format('Y-m-d H:i:s'));
 	}
 
-	
+	public function get_retweet_info() {
+		if ($this->is_retweet) {
+			$info = new stdClass();
+
+			$retweet = $this->raw_tweet['retweeted_status'];
+
+			$info->username = $retweet['user']['name'];
+			$info->screenname = $retweet['user']['screen_name'];
+			$info->text = $retweet['text'];
+			$info->time_gmt = $retweet['created_at'];
+			$info->url = "http://twitter.com/" . $retweet['user']['screen_name'] . "/status/" . $retweet['id'];
+			$info->user_url = "http://twitter.com/" . $info->screenname;
+
+			$info->raw_retweet = $retweet;
+
+			return $info;
+		} else {
+			return false;
+		}
+	}
+
+	public function get_response_info() {
+		if ($this->is_response) {
+			$info = new stdClass();
+			// @todo add object builder
+			return $info;
+		} else {
+			return false;
+		}
+	}
+
+	public function get_source() {
+		return $this->raw_tweet->source;
+	}
 }
 ?>
