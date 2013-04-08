@@ -69,7 +69,11 @@ class ST_Tweet {
 	public function get_response_info() {
 		if ($this->is_response) {
 			$info = new stdClass();
-			// @todo add object builder
+
+			$info->status_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'] . "/status/" . $this->raw_tweet['in_reply_to_status_id'];
+			$info->in_reply_to_name = $this->raw_tweet['in_reply_to_screen_name'];
+			$info->in_reply_to_user_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'];
+
 			return $info;
 		} else {
 			return false;
@@ -78,6 +82,10 @@ class ST_Tweet {
 
 	public function get_source() {
 		return $this->raw_tweet->source;
+	}
+
+	public function get_raw_tweet() {
+		return $this->raw_tweet;
 	}
 }
 ?>
