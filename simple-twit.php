@@ -3,7 +3,7 @@
 Plugin Name: Simple Twit
 Plugin URI: http://www.golden-tech.com
 Description: This is a simple plugin that enables you to pull in and cache a Twitter feed.
-Version: 0.1
+Version: RC1
 Author: George Yates
 Author URI: http://www.georgeyatesiii.com
 License: GPL
