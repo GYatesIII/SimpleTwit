@@ -43,6 +43,10 @@ function get_api_tweets($limit = 20, $since = 0) {
 		$params['sinde_id'] = 0;
 
 	$auth->request($method, $url, $params);
-	return json_decode($auth->response['response'], true);
+
+	if ($auth->response['info']['http_code'] == 200)
+		return json_decode($auth->response['response'], true);
+	else
+		return false;
 }
 ?>
