@@ -11,5 +11,4 @@ function st_tweet_type() {
 		)
 	);
 }
-/*COMMIT*/
 ?>
