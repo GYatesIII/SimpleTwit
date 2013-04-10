@@ -63,7 +63,7 @@ function cron_add_fifteen( $schedules ) {
 add_action('tweet_import', 'import_tweets');
 function import_tweets() {
 	$raw_tweets = get_api_tweets(0, get_option('last_tweet', 0));
-	if (!empty($raw_tweets))
+	if (!empty($raw_tweets) && $raw_tweets !== false)
 		input_tweets($raw_tweets);
 }
 
