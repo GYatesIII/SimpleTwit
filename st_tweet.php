@@ -38,7 +38,10 @@ class ST_Tweet {
 	public function get_default_time_str($time_gmt = false) {
 		if ($time_gmt === false) $time_gmt = $this->time_gmt;
 
-		$tz = new DateTimeZone(get_option('timezone_string', 'GMT'));
+		$tz_str = get_option('timezone_string');
+		if (empty($tz_str)) $tz_str = 'GMT';
+		
+		$tz = new DateTimeZone($tz_str);
 		$time = new DateTime();
 		$time = $time->setTimestamp(strtotime($this->time_gmt));
 		$time = $time->setTimezone($tz);
