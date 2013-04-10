@@ -120,7 +120,7 @@ function stf_activation() {
 		);
 	add_option('st_auth_creds', safe_serialize($init_options));
 	add_option('st_twit', 'GeorgeYatesIII');
-	add_option('st_last_tweet', 0);
+	add_option('last_tweet', 0);
 }
 
 /**
