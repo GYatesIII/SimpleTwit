@@ -37,10 +37,8 @@ function get_api_tweets($limit = 20, $since = 0) {
 	else
 		$params['count'] = 199;
 
-	if (is_int($since) && $since > 0)
+	if ($since > 0)
 		$params['since_id'] = $since;
-	else
-		$params['sinde_id'] = 0;
 
 	$auth->request($method, $url, $params);
 

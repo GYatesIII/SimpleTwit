@@ -71,29 +71,39 @@ function input_tweets($tweets) {
 	$tmhUtil = new tmhUtilities();
 
 	foreach ($tweets as $tweet) {
-		$post = array();
+		$args = array(
+		    'post_type' => tweet,
+		    'meta_key' => 'tweet_id',
+		    'meta_value' => $tweet['id_str']
+		);
+		$tweet_test = get_posts($args);
 
-		$post['post_title'] = $tweet['id_str'];
-		$post['post_content'] = $tmhUtil->entify($tweet);
-		$post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
-		$post['post_type'] = 'tweet';
+		if (empty($tweet_test)) {
+		    $post = array();
 
-		$post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
-		$timezone = get_option('timezone_string');
-		if (!empty($timezone))
-			$post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
+		    $post['post_title'] = $tweet['id_str'];
+		    $post['post_content'] = $tmhUtil->entify($tweet);
+		    $post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
+		    $post['post_type'] = 'tweet';
 
-		$post['post_date'] = $post_date->format('Y-m-d H:i:s');
-		$post['post_status'] = 'publish';
+		    $post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
+		    $timezone = get_option('timezone_string');
+		    if (!empty($timezone))
+			    $post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
 
-		$id = wp_insert_post($post);
-		update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
-		update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL ? 1 : 0);
-		update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL ? 1 : 0);
+		    $post['post_date'] = $post_date->format('Y-m-d H:i:s');
+		    $post['post_status'] = 'publish';
+
+		    $id = wp_insert_post($post);
+		    update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
+		    update_post_meta($id, 'tweet_id', $tweet['id_str']);
+		    update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL ? 1 : 0);
+		    update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL ? 1 : 0);
+		}
 	}
 
 	if (isset($tweets[0]['id']))
-		update_option('last_tweet', number_format($tweets[0]['id'], 0, '.', ''));
+		update_option('last_tweet', $tweets[0]['id_str']);
 }
 
 /**
