@@ -93,7 +93,7 @@ function input_tweets($tweets) {
 	}
 
 	if (isset($tweets[0]['id']))
-		update_option('last_tweet', intval($tweets[0]['id']));
+		update_option('last_tweet', number_format($tweets[0]['id'], 0, '.', ''));
 }
 
 /**
