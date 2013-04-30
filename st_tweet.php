@@ -40,11 +40,10 @@ class ST_Tweet {
 
 		$tz_str = get_option('timezone_string');
 		if (empty($tz_str)) $tz_str = 'GMT';
-		
+
 		$tz = new DateTimeZone($tz_str);
-		$time = new DateTime();
-		$time = $time->setTimestamp(strtotime($this->time_gmt));
-		$time = $time->setTimezone($tz);
+		$time = new DateTime("@" . strtotime($this->time_gmt) . "s");
+		$time->setTimezone($tz);
 		return parseTwitterDate($time->format('Y-m-d H:i:s'));
 	}
 
