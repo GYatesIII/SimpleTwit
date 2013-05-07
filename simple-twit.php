@@ -14,7 +14,7 @@ require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'st_tweet.php';
 
-function get_tweets($num = 5, $retweets = true, $replies = true) {
+function get_tweets($num = 5, $offset = 0, $retweets = true, $replies = true) {
 	$meta_query = array();
 	if ($retweets === false) {
 		$meta_query[] = array(
@@ -31,6 +31,7 @@ function get_tweets($num = 5, $retweets = true, $replies = true) {
 	$args = array(
 		'post_type' => 'tweet',
 		'numberposts' => $num,
+		'offset' => $offset,
 		'meta_query' => $meta_query
 		);
 
