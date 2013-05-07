@@ -89,5 +89,9 @@ class ST_Tweet {
 	public function get_raw_tweet() {
 		return $this->raw_tweet;
 	}
+
+	public function get_link() {
+		return 'https://twitter.com/' . $this->raw_tweet['user']['screen_name'] . '/status/' . $this->raw_tweet['id'];
+	}
 }
 ?>
