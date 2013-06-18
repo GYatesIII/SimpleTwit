@@ -73,7 +73,7 @@ function input_tweets($tweets) {
 
 	foreach ($tweets as $tweet) {
 		$args = array(
-		    'post_type' => tweet,
+		    'post_type' => 'tweet',
 		    'meta_key' => 'tweet_id',
 		    'meta_value' => $tweet['id_str']
 		);
