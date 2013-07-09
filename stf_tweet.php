@@ -18,10 +18,18 @@ class STF_Tweet {
 	public $time_gmt;
 	public $time_str;
 
+	/**
+	 * Creates our STF_Tweet object which gives us much more useful information about a tweet than your standard WP_Post object
+	 *
+	 * @param integer The ID of the tweet post in the DB to be turned into a full blown tweet object
+	 */
 	function __construct($id = 0) {
 		if ($id != 0) {
 			$this->wp_id = $id;
 			$this->wp_post = get_post($this->wp_id);
+			if ($this->wp_post->post_type !== 'stf_tweet')
+				throw new Exception("This post must be a Tweet. Post ID {$id} is a {$this->wp_post->post_type}");
+
 			$this->raw_tweet = safe_unserialize(get_post_meta($this->wp_id, 'raw_tweet', safe_serialize(array())));
 
 			$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1 ? true : false;
@@ -35,11 +43,19 @@ class STF_Tweet {
 		}
 	}
 
+	/**
+	 * Get the time since this tweet in the Wordpress timezone
+	 *
+	 * @param string The GMT time represented as a string, if no time is provided, it uses the GMT time of the tweet
+	 * @return string The time since this tweet in the format that Twitter represents it on their site, ex: 5 minutes ago
+	 */
 	public function get_default_time_str($time_gmt = false) {
-		if ($time_gmt === false) $time_gmt = $this->time_gmt;
+		if ($time_gmt === false)
+			$time_gmt = $this->time_gmt;
 
 		$tz_str = get_option('timezone_string');
-		if (empty($tz_str)) $tz_str = 'GMT';
+		if (empty($tz_str))
+			$tz_str = 'GMT';
 
 		$tz = new DateTimeZone($tz_str);
 		$time = new DateTime("@" . strtotime($this->time_gmt) . "s");
@@ -47,6 +63,11 @@ class STF_Tweet {
 		return parseTwitterDate($time->format('Y-m-d H:i:s'));
 	}
 
+	/**
+	 * Gets a simple set of information about the original tweet that this tweet is a retweet of
+	 *
+	 * @return stdClass|boolean A simple object of the retweeted tweet, or false if this tweet is not a retweet
+	 */
 	public function get_retweet_info() {
 		if ($this->is_retweet) {
 			$info = new stdClass();
@@ -68,6 +89,11 @@ class STF_Tweet {
 		}
 	}
 
+	/**
+	 * Gets a simple set of information about the tweet and user being replied to by this tweet
+	 *
+	 * @return stdClass|boolean A simple object of the tweet being replied to by this tweet
+	 */
 	public function get_reply_info() {
 		if ($this->is_reply) {
 			$info = new stdClass();
@@ -82,6 +108,11 @@ class STF_Tweet {
 		}
 	}
 
+	/**
+	 * Returns the device or method used for tweeting this tweet
+	 *
+	 * @return string The source of the tweet
+	 */
 	public function get_source() {
 		return $this->raw_tweet->source;
 	}
@@ -90,6 +121,11 @@ class STF_Tweet {
 		return $this->raw_tweet;
 	}
 
+	/**
+	 * Gets the direct link to this tweet on Twitter
+	 *
+	 * @return string The direct link on Twitter to this tweet
+	 */
 	public function get_link() {
 		return 'https://twitter.com/' . $this->raw_tweet['user']['screen_name'] . '/status/' . $this->raw_tweet['id_str'];
 	}
