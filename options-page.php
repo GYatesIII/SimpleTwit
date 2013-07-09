@@ -35,7 +35,7 @@ if (!function_exists('stf_twits_explain'))
 {
 	// Displays the explanation text for the twitter username
 	function stf_twits_explain() {
-		echo 'These are the usernames that will be pulled into this feed. Ideally, this shouldn\'t be more than ten users.';
+		echo 'The username pulled whose feed we\'re pulling in.';
 	}
 }
 if (!function_exists('stf_twits_fields'))
