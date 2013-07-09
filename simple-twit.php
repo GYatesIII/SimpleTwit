@@ -14,176 +14,205 @@ require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'st_tweet.php';
 
-/**
- * The main function used to retrieve the raw tweets
- *
- * @param array An array of arguments 'num', 'offset', 'retweets', and 'replies'
- * @return array An array of tweets
- */
-function stf_get_tweets($args) {
-	$defaults = array(
-		'num' => 5, // The number of tweets to get
-		'offset' => 0, // The number of tweets to offset
-		'retweets' => true, // Whether or not to get retweets
-		'replies' => true  // Whether or not to get replies
-	);
-	$args = wp_parse_args($args, $defaults);
-
-	$meta_query = array();
-	if (!$args['retweets']) {
-		$meta_query[] = array(
-			'key' => 'is_retweet',
-			'value' => 0
-			);
-	}
-	if (!$args['replies']) {
-		$meta_query[] = array(
-			'key' => 'is_reply',
-			'value' => 0
-			);
-	}
-	$post_args = array(
-		'post_type' => 'tweet',
-		'numberposts' => $args['num'],
-		'offset' => $args['offset'],
-		'meta_query' => $meta_query
+if (!function_exists('stf_get_tweets'))
+{
+	/**
+	 * The main function used to retrieve the raw tweets
+	 *
+	 * @param array An array of arguments 'num', 'offset', 'retweets', and 'replies'
+	 * @return array An array of tweets
+	 */
+	function stf_get_tweets($args) {
+		$defaults = array(
+			'num' => 5, // The number of tweets to get
+			'offset' => 0, // The number of tweets to offset
+			'retweets' => true, // Whether or not to get retweets
+			'replies' => true  // Whether or not to get replies
 		);
+		$args = wp_parse_args($args, $defaults);
 
-	$raw_tweets = get_posts($post_args);
-
-	$tweets = array();
-	foreach ($raw_tweets as $raw_tweet) {
-		$tweets[] = new ST_Tweet($raw_tweet->ID);
-	}
-
-	return $tweets;
-}
-
-/**
- * Setting Up Import on Plugin Install
- */
-add_filter( 'cron_schedules', 'stf_cron_add_fifteen' );
-function stf_cron_add_fifteen( $schedules ) {
-	// Adds once weekly to the existing schedules.
-	$schedules['fifteen'] = array(
-		'interval' => 60*15,
-		'display' => 'Every Fifteen Minutes'
-	);
-	return $schedules;
-}
-
-add_action('stf_tweet_import', 'stf_import_tweets');
-function stf_import_tweets() {
-	$raw_tweets = get_api_tweets(0, get_option('last_tweet', 0));
-	if (!empty($raw_tweets) && $raw_tweets !== false)
-		input_tweets($raw_tweets);
-}
-
-function stf_input_tweets($tweets) {
-	$tmhUtil = new tmhUtilities();
-
-	foreach ($tweets as $tweet) {
-		$args = array(
-		    'post_type' => 'tweet',
-		    'meta_key' => 'tweet_id',
-		    'meta_value' => $tweet['id_str']
-		);
-		$tweet_test = get_posts($args);
-
-		if (empty($tweet_test)) {
-		    $post = array();
-
-		    $post['post_title'] = $tweet['id_str'];
-		    $post['post_content'] = $tmhUtil->entify($tweet);
-		    $post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
-		    $post['post_type'] = 'tweet';
-
-		    $post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
-		    $timezone = get_option('timezone_string');
-		    if (!empty($timezone))
-			    $post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
-
-		    $post['post_date'] = $post_date->format('Y-m-d H:i:s');
-		    $post['post_status'] = 'publish';
-
-		    $id = wp_insert_post($post);
-		    update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
-		    update_post_meta($id, 'tweet_id', $tweet['id_str']);
-		    update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL ? 1 : 0);
-		    update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL ? 1 : 0);
+		$meta_query = array();
+		if (!$args['retweets']) {
+			$meta_query[] = array(
+				'key' => 'is_retweet',
+				'value' => 0
+				);
 		}
+		if (!$args['replies']) {
+			$meta_query[] = array(
+				'key' => 'is_reply',
+				'value' => 0
+				);
+		}
+		$post_args = array(
+			'post_type' => 'tweet',
+			'numberposts' => $args['num'],
+			'offset' => $args['offset'],
+			'meta_query' => $meta_query
+			);
+
+		$raw_tweets = get_posts($post_args);
+
+		$tweets = array();
+		foreach ($raw_tweets as $raw_tweet) {
+			$tweets[] = new STF_Tweet($raw_tweet->ID);
+		}
+
+		return $tweets;
 	}
-
-	if (isset($tweets[0]['id']))
-		update_option('last_tweet', $tweets[0]['id_str']);
 }
 
-/**
- * Clearing the Cron on Plugin Deactivation
- */
-register_deactivation_hook(__FILE__, 'stf_deactivation');
-function stf_deactivation() {
-	wp_clear_scheduled_hook('stf_tweet_import');
-}
-
-/**
- * Adding in Cron on Plugin Activation, adding in plugin options and importing the first 50 tweets of each author
- */
-register_activation_hook(__FILE__, 'stf_activation');
-function stf_activation() {
-	wp_schedule_event(time(), 'fifteen', 'stf_tweet_import');
-
-	// Adding Initial Options for Plugin
-	$init_options = array (
-			'consumer_key' => '',
-			'consumer_secret' => '',
-			'user_token' => '',
-			'user_secret' => ''
+if (!function_exists('stf_cron_add_fifteen'))
+{
+	/**
+	 * Setting Up Import on Plugin Install
+	 */
+	function stf_cron_add_fifteen( $schedules ) {
+		// Adds once weekly to the existing schedules.
+		$schedules['fifteen'] = array(
+			'interval' => 60*15,
+			'display' => 'Every Fifteen Minutes'
 		);
-	add_option('st_auth_creds', safe_serialize($init_options));
-	add_option('st_twit', 'GeorgeYatesIII');
-	add_option('last_tweet', 0);
+		return $schedules;
+	}
+	add_filter( 'cron_schedules', 'stf_cron_add_fifteen' );
+}
+
+if (!function_exists('stf_import_tweets'))
+{
+	/**
+	 * Runs every 15 minutes and makes the API call and then passes the response to the function that enters the tweets into the DB
+	 */
+	function stf_import_tweets() {
+		$raw_tweets = get_api_tweets(0, get_option('last_tweet', 0));
+		if (!empty($raw_tweets) && $raw_tweets !== false)
+			input_tweets($raw_tweets);
+	}
+	add_action('stf_tweet_import', 'stf_import_tweets');
+}
+
+if (!function_exists('stf_input_tweets'))
+{
+	/**
+	 * Takes the raw response from the Twitter API and processes it into the WP DB
+	 *
+	 * @param array $tweets
+	 */
+	function stf_input_tweets($tweets) {
+		$tmhUtil = new tmhUtilities();
+
+		foreach ($tweets as $tweet) {
+			$args = array(
+				'post_type' => 'tweet',
+				'meta_key' => 'tweet_id',
+				'meta_value' => $tweet['id_str']
+			);
+			$tweet_test = get_posts($args);
+
+			if (empty($tweet_test)) {
+				$post = array();
+
+				$post['post_title'] = $tweet['id_str'];
+				$post['post_content'] = $tmhUtil->entify($tweet);
+				$post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
+				$post['post_type'] = 'tweet';
+
+				$post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
+				$timezone = get_option('timezone_string');
+				if (!empty($timezone))
+					$post_date->setTimezone(new DateTimeZone(get_option('timezone_string')));
+
+				$post['post_date'] = $post_date->format('Y-m-d H:i:s');
+				$post['post_status'] = 'publish';
+
+				$id = wp_insert_post($post);
+				update_post_meta($id, 'raw_tweet', safe_serialize($tweet));
+				update_post_meta($id, 'tweet_id', $tweet['id_str']);
+				update_post_meta($id, 'is_retweet',  isset($tweet['retweeted_status']) && $tweet['retweeted_status'] !== NULL ? 1 : 0);
+				update_post_meta($id, 'is_reply', isset($tweet['in_reply_to_status_id']) && $tweet['in_reply_to_status_id'] !== NULL ? 1 : 0);
+			}
+		}
+
+		if (isset($tweets[0]['id']))
+			update_option('last_tweet', $tweets[0]['id_str']);
+	}
+}
+
+if (!function_exists('stf_deactivation'))
+{
+	/**
+	 * Clearing the Cron on Plugin Deactivation
+	 */
+	register_deactivation_hook(__FILE__, 'stf_deactivation');
+	function stf_deactivation() {
+		wp_clear_scheduled_hook('stf_tweet_import');
+	}
+}
+
+if (!function_exists('stf_activation'))
+{
+	/**
+	 * Adding in Cron on Plugin Activation, adding in plugin options and importing the first 50 tweets of each author
+	 */
+	function stf_activation() {
+		wp_schedule_event(time(), 'fifteen', 'stf_tweet_import');
+
+		// Adding Initial Options for Plugin
+		$init_options = array (
+				'consumer_key' => '',
+				'consumer_secret' => '',
+				'user_token' => '',
+				'user_secret' => ''
+			);
+		add_option('st_auth_creds', safe_serialize($init_options));
+		add_option('st_twit', 'GeorgeYatesIII');
+		add_option('last_tweet', 0);
+	}
+	register_activation_hook(__FILE__, 'stf_activation');
 }
 
 /**
  * Helper Functions
  */
 
-/**
- * Parse a provided date into a string similar to how Twitter represents its dates
- *
- * @param DateTime $date The date of the tweet
- * @param DateTime $large_date [optional] The date to compare the tweet to, to generate the string, defaults to the current date
- * @return string on success or boolean on failure
- */
-function parseTwitterDate($date, $large_date=false)
+if (!function_exists('parseTwitterDate'))
 {
-	if(!$large_date)
-		$large_date = date('Y-m-d h:i:s');
+	/**
+	 * Parse a provided date into a string similar to how Twitter represents its dates
+	 *
+	 * @param DateTime $date The date of the tweet
+	 * @param DateTime $large_date [optional] The date to compare the tweet to, to generate the string, defaults to the current date
+	 * @return string on success or boolean on failure
+	 */
+	function parseTwitterDate($date, $large_date=false)
+	{
+		if(!$large_date)
+			$large_date = date('Y-m-d h:i:s');
 
-	$n = strtotime($large_date) - strtotime($date);
+		$n = strtotime($large_date) - strtotime($date);
 
-	if($n <= 1) return 'less than 1 second ago';
-	if($n < (60)) return $n . ' seconds ago';
-	if($n < (60*60)) { $minutes = round($n/60); return 'about ' . $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago'; }
-	if($n < (60*60*16)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
-	if($n < (time() - strtotime('yesterday'))) return 'yesterday';
-	if($n < (60*60*24)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
-	if($n < (60*60*24*6.5)) return 'about ' . round($n/(60*60*24)) . ' days ago';
-	if($n < (time() - strtotime('last week'))) return 'last week';
-	if(round($n/(60*60*24*7))  == 1) return 'about a week ago';
-	if($n < (60*60*24*7*3.5)) return 'about ' . round($n/(60*60*24*7)) . ' weeks ago';
-	if($n < (time() - strtotime('last month'))) return 'last month';
-	if(round($n/(60*60*24*7*4))  == 1) return 'about a month ago';
-	if($n < (60*60*24*7*4*11.5)) return 'about ' . round($n/(60*60*24*7*4)) . ' months ago';
-	if($n < (time() - strtotime('last year'))) return 'last year';
-	if(round($n/(60*60*24*7*52)) == 1) return 'about a year ago';
-	if($n >= (60*60*24*7*4*12)) return 'about ' . round($n/(60*60*24*7*52)) . ' years ago';
-	return false;
+		if($n <= 1) return 'less than 1 second ago';
+		if($n < (60)) return $n . ' seconds ago';
+		if($n < (60*60)) { $minutes = round($n/60); return 'about ' . $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago'; }
+		if($n < (60*60*16)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+		if($n < (time() - strtotime('yesterday'))) return 'yesterday';
+		if($n < (60*60*24)) { $hours = round($n/(60*60)); return 'about ' . $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago'; }
+		if($n < (60*60*24*6.5)) return 'about ' . round($n/(60*60*24)) . ' days ago';
+		if($n < (time() - strtotime('last week'))) return 'last week';
+		if(round($n/(60*60*24*7))  == 1) return 'about a week ago';
+		if($n < (60*60*24*7*3.5)) return 'about ' . round($n/(60*60*24*7)) . ' weeks ago';
+		if($n < (time() - strtotime('last month'))) return 'last month';
+		if(round($n/(60*60*24*7*4))  == 1) return 'about a month ago';
+		if($n < (60*60*24*7*4*11.5)) return 'about ' . round($n/(60*60*24*7*4)) . ' months ago';
+		if($n < (time() - strtotime('last year'))) return 'last year';
+		if(round($n/(60*60*24*7*52)) == 1) return 'about a year ago';
+		if($n >= (60*60*24*7*4*12)) return 'about ' . round($n/(60*60*24*7*52)) . ' years ago';
+		return false;
+	}
 }
 
 /**
- * Serialize and Unserialize data safely to avoid offset errors
+ * Helper functions used to serialize and unserialize data safely to avoid offset errors
  */
 if (!function_exists('safe_serialize')) {
 	function safe_serialize($var) {

@@ -6,7 +6,7 @@
  */
 require_once 'lib/tmhUtilities.php';
 
-class ST_Tweet {
+class STF_Tweet {
 	private $wp_id;
 	private $wp_post;
 	private $raw_tweet;
