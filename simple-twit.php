@@ -20,7 +20,7 @@ require_once 'st_tweet.php';
  * @param array An array of arguments 'num', 'offset', 'retweets', and 'replies'
  * @return array An array of tweets
  */
-function get_tweets($args) {
+function stf_get_tweets($args) {
 	$defaults = array(
 		'num' => 5, // The number of tweets to get
 		'offset' => 0, // The number of tweets to offset
@@ -62,8 +62,8 @@ function get_tweets($args) {
 /**
  * Setting Up Import on Plugin Install
  */
-add_filter( 'cron_schedules', 'cron_add_fifteen' );
-function cron_add_fifteen( $schedules ) {
+add_filter( 'cron_schedules', 'stf_cron_add_fifteen' );
+function stf_cron_add_fifteen( $schedules ) {
 	// Adds once weekly to the existing schedules.
 	$schedules['fifteen'] = array(
 		'interval' => 60*15,
@@ -72,14 +72,14 @@ function cron_add_fifteen( $schedules ) {
 	return $schedules;
 }
 
-add_action('tweet_import', 'import_tweets');
-function import_tweets() {
+add_action('stf_tweet_import', 'stf_import_tweets');
+function stf_import_tweets() {
 	$raw_tweets = get_api_tweets(0, get_option('last_tweet', 0));
 	if (!empty($raw_tweets) && $raw_tweets !== false)
 		input_tweets($raw_tweets);
 }
 
-function input_tweets($tweets) {
+function stf_input_tweets($tweets) {
 	$tmhUtil = new tmhUtilities();
 
 	foreach ($tweets as $tweet) {
@@ -123,7 +123,7 @@ function input_tweets($tweets) {
  */
 register_deactivation_hook(__FILE__, 'stf_deactivation');
 function stf_deactivation() {
-	wp_clear_scheduled_hook('tweet_import');
+	wp_clear_scheduled_hook('stf_tweet_import');
 }
 
 /**
@@ -131,7 +131,7 @@ function stf_deactivation() {
  */
 register_activation_hook(__FILE__, 'stf_activation');
 function stf_activation() {
-	wp_schedule_event(time(), 'fifteen', 'tweet_import');
+	wp_schedule_event(time(), 'fifteen', 'stf_tweet_import');
 
 	// Adding Initial Options for Plugin
 	$init_options = array (
