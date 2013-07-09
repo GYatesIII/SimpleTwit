@@ -60,6 +60,7 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 * Added in option to offset the tweets returned by `stf_get_tweets()`
 * Added in `get_tweet_link()` method to `STF_Tweet` object to return the direct link to status
 * Added in documentation of the usage of the plugin in the README and in the code
+
 #### Feature Updates ####
 * Added in a check on the API call that verified the tweet was not already in the DB before adding
 * Modified some of the DateTime code to make the plugin compatible with PHP 5.2
@@ -67,6 +68,7 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 * Namespaced the entire plugin to use `stf_` instead of no namespacing or `st_`
 * Added in `function_exists()` checks to prevent fatal conflicts with other plugins
 * Amended the Access Token and Secret labeling to mirror Twitter
+
 #### Bugfixes ####
 * Fixed an issue with the default WP timezone returning an invalid timezone string for PHP
 * Fixed an error that was entering a failed call to the Twitter API into the DB
