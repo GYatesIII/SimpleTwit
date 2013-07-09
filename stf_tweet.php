@@ -1,6 +1,6 @@
 <?php
 /**
- * Description of st-tweet
+ * Description of STF_Tweet
  *
  * @author George Yates
  */

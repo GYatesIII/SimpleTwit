@@ -9,7 +9,7 @@ Author URI: http://www.georgeyatesiii.com
 License: GPL
 */
 
-require_once 'lib/tweet-post-type.php';
+require_once 'lib/stf-tweet-post-type.php';
 require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'stf_tweet.php';
@@ -45,7 +45,7 @@ if (!function_exists('stf_get_tweets'))
 				);
 		}
 		$post_args = array(
-			'post_type' => 'tweet',
+			'post_type' => 'stf_tweet',
 			'numberposts' => $args['num'],
 			'offset' => $args['offset'],
 			'meta_query' => $meta_query
@@ -103,7 +103,7 @@ if (!function_exists('stf_input_tweets'))
 
 		foreach ($tweets as $tweet) {
 			$args = array(
-				'post_type' => 'tweet',
+				'post_type' => 'stf_tweet',
 				'meta_key' => 'tweet_id',
 				'meta_value' => $tweet['id_str']
 			);
@@ -115,7 +115,7 @@ if (!function_exists('stf_input_tweets'))
 				$post['post_title'] = $tweet['id_str'];
 				$post['post_content'] = $tmhUtil->entify($tweet);
 				$post['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($tweet['created_at']));
-				$post['post_type'] = 'tweet';
+				$post['post_type'] = 'stf_tweet';
 
 				$post_date = new DateTime($post['post_date_gmt'], new DateTimeZone('GMT'));
 				$timezone = get_option('timezone_string');

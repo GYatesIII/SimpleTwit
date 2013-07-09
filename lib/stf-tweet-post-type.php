@@ -2,7 +2,7 @@
 if (!function_exists('stf_tweet_type'))
 {
 	function stf_tweet_type() {
-		register_post_type('tweet', array(
+		register_post_type('stf_tweet', array(
 				'label' => 'Tweet',
 				'description' => 'Tweets pulled from Twitter',
 				'public' => false,
