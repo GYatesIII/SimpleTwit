@@ -42,7 +42,7 @@ if (!function_exists('stf_twits_fields'))
 {
 	// Displays the username entry and deletion structure
 	function stf_twits_fields() {
-		echo '<input type="text" value="' . get_option('stf_twit') . '" name="stf_twit" class="regular-text" id="stf_twits_fields">';
+		echo '@<input type="text" value="' . get_option('stf_twit') . '" name="stf_twit" class="regular-text" id="stf_twits_fields">';
 	}
 }
 
