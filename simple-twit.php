@@ -12,7 +12,7 @@ License: GPL
 require_once 'lib/tweet-post-type.php';
 require_once 'lib/make_request.php';
 require_once 'options-page.php';
-require_once 'st_tweet.php';
+require_once 'stf_tweet.php';
 
 if (!function_exists('stf_get_tweets'))
 {
@@ -84,7 +84,7 @@ if (!function_exists('stf_import_tweets'))
 	 * Runs every 15 minutes and makes the API call and then passes the response to the function that enters the tweets into the DB
 	 */
 	function stf_import_tweets() {
-		$raw_tweets = get_api_tweets(0, get_option('last_tweet', 0));
+		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', 0));
 		if (!empty($raw_tweets) && $raw_tweets !== false)
 			input_tweets($raw_tweets);
 	}
@@ -134,7 +134,7 @@ if (!function_exists('stf_input_tweets'))
 		}
 
 		if (isset($tweets[0]['id']))
-			update_option('last_tweet', $tweets[0]['id_str']);
+			update_option('stf_last_tweet', $tweets[0]['id_str']);
 	}
 }
 
@@ -164,9 +164,9 @@ if (!function_exists('stf_activation'))
 				'user_token' => '',
 				'user_secret' => ''
 			);
-		add_option('st_auth_creds', safe_serialize($init_options));
-		add_option('st_twit', 'GeorgeYatesIII');
-		add_option('last_tweet', 0);
+		add_option('stf_auth_creds', safe_serialize($init_options));
+		add_option('stf_twit', 'GeorgeYatesIII');
+		add_option('stf_last_tweet', 0);
 	}
 	register_activation_hook(__FILE__, 'stf_activation');
 }

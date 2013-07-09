@@ -15,13 +15,13 @@ require 'tmhUtilities.php';
 if (!function_exists('get_api_tweets'))
 {
 	function get_api_tweets($limit = 20, $since = 0) {
-		$st_auth_creds = safe_unserialize(get_option('st_auth_creds'));
+		$stf_auth_creds = safe_unserialize(get_option('stf_auth_creds'));
 
 		$config = array(
-			'consumer_key' => $st_auth_creds['consumer_key'],
-			'consumer_secret' => $st_auth_creds['consumer_secret'],
-			'user_token' => $st_auth_creds['user_token'],
-			'user_secret' => $st_auth_creds['user_secret']
+			'consumer_key' => $stf_auth_creds['consumer_key'],
+			'consumer_secret' => $stf_auth_creds['consumer_secret'],
+			'user_token' => $stf_auth_creds['user_token'],
+			'user_secret' => $stf_auth_creds['user_secret']
 		);
 
 		$auth = new tmhOAuth($config);
@@ -29,7 +29,7 @@ if (!function_exists('get_api_tweets'))
 		$method = 'GET';
 		$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 		$params = array(
-			'screen_name' => get_option('st_twit'),
+			'screen_name' => get_option('stf_twit'),
 			'include_rts' => 'true',
 			'exclude_replies' => 'false'
 		);
