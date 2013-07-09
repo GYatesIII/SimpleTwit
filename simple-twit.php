@@ -14,35 +14,46 @@ require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'st_tweet.php';
 
-function get_tweets($num = 5, $offset = 0, $retweets = true, $replies = true) {
+/**
+ * The main function used to retrieve the raw tweets
+ *
+ * @param array An array of arguments 'num', 'offset', 'retweets', and 'replies'
+ * @return array An array of tweets
+ */
+function get_tweets($args) {
+	$defaults = array(
+		'num' => 5, // The number of tweets to get
+		'offset' => 0, // The number of tweets to offset
+		'retweets' => true, // Whether or not to get retweets
+		'replies' => true  // Whether or not to get replies
+	);
+	$args = wp_parse_args($args, $defaults);
+
 	$meta_query = array();
-	if ($retweets === false) {
+	if (!$args['retweets']) {
 		$meta_query[] = array(
 			'key' => 'is_retweet',
 			'value' => 0
 			);
 	}
-	if ($replies === false) {
+	if (!$args['replies']) {
 		$meta_query[] = array(
 			'key' => 'is_reply',
 			'value' => 0
 			);
 	}
-	$args = array(
+	$post_args = array(
 		'post_type' => 'tweet',
-		'numberposts' => $num,
-		'offset' => $offset,
+		'numberposts' => $args['num'],
+		'offset' => $args['offset'],
 		'meta_query' => $meta_query
 		);
 
-	$raw_tweets = get_posts($args);
+	$raw_tweets = get_posts($post_args);
 
 	$tweets = array();
-
 	foreach ($raw_tweets as $raw_tweet) {
-		$tweet = new ST_Tweet($raw_tweet->ID);
-
-		$tweets[] = $tweet;
+		$tweets[] = new ST_Tweet($raw_tweet->ID);
 	}
 
 	return $tweets;
