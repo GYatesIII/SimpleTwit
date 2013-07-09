@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Twit
 Plugin URI: https://github.com/GYatesIII/SimpleTwit
-Description: A plugin for developers that sets up a WP_Cron Twitter Feed to pull in and cache a user's stream. Barebones, provides a function to access the tweets and a new STF_Tweet object that provides methods and properties commonly needed.
+Description: A plugin for developers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the oAuth handling, caching to avoid rate limiting, and utilities to easily format tweets correctly without predefined styles to work around.
 Version: RC1
 Author: George Yates
 Author URI: http://www.georgeyatesiii.com
@@ -101,7 +101,7 @@ if (!function_exists('stf_import_tweets'))
 	function stf_import_tweets() {
 		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', 0));
 		if (!empty($raw_tweets) && $raw_tweets !== false)
-			input_tweets($raw_tweets);
+			stf_input_tweets($raw_tweets);
 	}
 	add_action('stf_tweet_import', 'stf_import_tweets');
 }
