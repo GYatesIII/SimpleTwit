@@ -76,7 +76,7 @@ class STF_Tweet {
 
 			$info->username = $retweet['user']['name'];
 			$info->screenname = $retweet['user']['screen_name'];
-			$info->text = $retweet['text'];
+			$info->content = $retweet['text'];
 			$info->time_gmt = $retweet['created_at'];
 			$info->url = "http://twitter.com/" . $retweet['user']['screen_name'] . "/status/" . $retweet['id'];
 			$info->user_url = "http://twitter.com/" . $info->screenname;
@@ -98,7 +98,7 @@ class STF_Tweet {
 		if ($this->is_reply) {
 			$info = new stdClass();
 
-			$info->status_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'] . "/status/" . $this->raw_tweet['in_reply_to_status_id'];
+			$info->url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'] . "/status/" . $this->raw_tweet['in_reply_to_status_id'];
 			$info->in_reply_to_name = $this->raw_tweet['in_reply_to_screen_name'];
 			$info->in_reply_to_user_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'];
 
@@ -126,7 +126,7 @@ class STF_Tweet {
 	 *
 	 * @return string The direct link on Twitter to this tweet
 	 */
-	public function get_link() {
+	private function get_link() {
 		return 'https://twitter.com/' . $this->raw_tweet['user']['screen_name'] . '/status/' . $this->raw_tweet['id_str'];
 	}
 }
