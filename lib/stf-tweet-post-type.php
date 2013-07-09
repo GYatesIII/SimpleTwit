@@ -14,4 +14,3 @@ if (!function_exists('stf_tweet_type'))
 	}
 	add_action('init', 'stf_tweet_type');
 }
-?>

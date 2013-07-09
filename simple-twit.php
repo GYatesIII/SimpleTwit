@@ -1,12 +1,27 @@
 <?php
 /*
 Plugin Name: Simple Twit
-Plugin URI: http://www.golden-tech.com
-Description: This is a simple plugin that enables you to pull in and cache a Twitter feed.
+Plugin URI: https://github.com/GYatesIII/SimpleTwit
+Description: A plugin for developers that sets up a WP_Cron Twitter Feed to pull in and cache a user's stream. Barebones, provides a function to access the tweets and a new STF_Tweet object that provides methods and properties commonly needed.
 Version: RC1
 Author: George Yates
 Author URI: http://www.georgeyatesiii.com
-License: GPL
+License: GPL2
+
+Copyright 2013 George Yates (email : me@georgeyatesiii.com)
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2, as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 require_once 'lib/stf-tweet-post-type.php';
@@ -225,4 +240,3 @@ if ( !function_exists('safe_unserialize') ) {
 		return unserialize(base64_decode($var));
 	}
 }
-?>

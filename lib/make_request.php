@@ -50,4 +50,3 @@ if (!function_exists('get_api_tweets'))
 			return false;
 	}
 }
-?>

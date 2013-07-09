@@ -110,4 +110,3 @@ if (!function_exists('stf_options_page'))
 		include 'views/options-template.php';
 	}
 }
-?>

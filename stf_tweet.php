@@ -94,4 +94,3 @@ class STF_Tweet {
 		return 'https://twitter.com/' . $this->raw_tweet['user']['screen_name'] . '/status/' . $this->raw_tweet['id_str'];
 	}
 }
-?>
