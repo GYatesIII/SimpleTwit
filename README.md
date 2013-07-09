@@ -77,6 +77,8 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 * Fixed an issue where a Notice was being thrown by the lack of apostrophes around a string
 * Fixed the description of username entry to be more clear that only one user can be entered and to not include the @
 
+***
+
 ### RC1 ###
 * The initial release of the plugin.
 
