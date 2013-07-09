@@ -1,10 +1,12 @@
 # SimpleTwit #
 
-A simple Twitter Feed plugin for Wordpress
+A simple developer's Twitter Feed plugin for Wordpress
 
 ## Further Development Ideas ##
 * Database Functions (Delete, Rescrape)
 * Multiple Twitter Streams
+* Add in basic Twitter box
+* Add in Twitter feed widget
 * Ability to retweet and reply with your own account right from site
 
 ## Changelog ##
