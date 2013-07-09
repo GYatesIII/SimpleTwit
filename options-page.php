@@ -22,8 +22,8 @@ if (!function_exists('stf_options_setup'))
 		// OAuth Creds Fields
 		add_settings_field('stf_consumer_key_field', 'Consumer Key', 'stf_auth_consumer_key', 'stf-twit-feed', 'stf_auth_creds_section');
 		add_settings_field('stf_consumer_secret_field', 'Consumer Secet', 'stf_auth_consumer_secret', 'stf-twit-feed', 'stf_auth_creds_section');
-		add_settings_field('stf_user_token_field', 'User Token', 'stf_auth_user_token', 'stf-twit-feed', 'stf_auth_creds_section');
-		add_settings_field('stf_user_secret_field', 'User Secret', 'stf_auth_user_secret', 'stf-twit-feed', 'stf_auth_creds_section');
+		add_settings_field('stf_user_token_field', 'Access Token', 'stf_auth_user_token', 'stf-twit-feed', 'stf_auth_creds_section');
+		add_settings_field('stf_user_secret_field', 'Access Secret', 'stf_auth_user_secret', 'stf-twit-feed', 'stf_auth_creds_section');
 	}
 	add_action('admin_init', 'stf_options_setup');
 }
