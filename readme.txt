@@ -1,5 +1,6 @@
 === SimpleTwit ===
 Contributors: GYatesIII
+Donate link:
 Tags: twitter feed, developer, simple, oauth, caching, cache
 Requires at least: 3.3
 Tested up to: 3.5.2
@@ -23,8 +24,10 @@ A plugin for developers that sets up a WP_Cron to pull in and cache a user's str
 = Usage =
 The plugin provides a number of useful functions. First, we'll look at the STF_Tweet object:
 
-= `STF_Tweet` =
+**`STF_Tweet`**
+
 This object replaces the WP_Post object and provides a number of useful methods when working with tweets. This object can be created by constructing a new `STF_Tweet` and passing it the WP Post ID of a Tweet. `$tweet = new STF_Tweet($id)` Generally though, this will be done for you with the `stf_get_tweets()` function. This object has the following accessible properties:
+
 * `is_retweet` - This boolean will be `true` when the tweet is a retweet
 * `is_reply` - This boolean will be `true` when the tweet is a reply to another tweet
 * `content` - The content of the tweet, this will be automatically formatted to link other referenced Twitter users, hashtags, and inline links
@@ -33,6 +36,7 @@ This object replaces the WP_Post object and provides a number of useful methods 
 * `time_str` - The string that represents how long it's been since the tweet, in the way that Twitter usually dates its Tweets, good for an international audience since this isn't timezone specicific
 
 The object has the following methods:
+
 * `get_default_time_str($time)` - This method will return a Twitter formatted how long since `$time`, where `$time` is a string representing a GMT timezoned date time
 * `get_source()` - This method returns the string representing the device used to Tweet this status
 * `get_raw_tweet()` - This method returns the raw response from the API, this should only be rarely needed
@@ -48,7 +52,8 @@ The object has the following methods:
 * * `in_reply_to_name` - The screenname of the original Twitter user
 * * `in_reply_to_user_url` - The direct link to the original Twitter user's profile
 
-= `stf_get_tweets($args)` =
+**`stf_get_tweets($args)`**
+
 This will be the main function used to get Tweets from the DB. This function takes an array of parameters as follows:
 * `$args['num']` - This tells us how many Tweets to get from the DB, defaults to 5
 * `$args['offset']` - This tells us how many Tweets to skip over when selecting our Tweets, defaults to 0
@@ -75,18 +80,26 @@ This plugin is intended entirely for developers and therefore there's no prebuil
 
 == Changelog ==
 
+= 1.1.1 =
+Bugfixes:
+
+* Fixing styling errors on the readme.txt
+
 = 1.1.0 =
 New Features:
+
 * Added readme.txt for Wordpress.org compatibility
 * Added two screenshots
 
 = 1.0.0 =
 New Features:
+
 * Option to offset tweets returned by `stf_get_tweets()`
 * Added `get_tweet_link()` method to `STF_Tweet` object to return the direct link to status
 * Documentation of the usage of the plugin in the README and documented the code
 
 Feature Updates:
+
 * Added in a check on the API call that verified the tweet was not already in the DB before adding
 * Modified some of the DateTime code to make the plugin compatible with PHP 5.2
 * Modified the `stf_get_tweets()` function so that it takes a single array of parameters argument rather than a list of arugments
@@ -95,6 +108,7 @@ Feature Updates:
 * Amended the Access Token and Secret labeling to mirror Twitter
 
 Bugfixes:
+
 * Fixed an issue with the default WP timezone returning an invalid timezone string for PHP
 * Fixed an error that was entering a failed call to the Twitter API into the DB
 * Fixed an error that was causing tweets to import twice
@@ -104,6 +118,8 @@ Bugfixes:
 
 = RC1 =
 Initial release of the plugin
+
+== Upgrade Notice ==
 
 == Further Development ==
 
