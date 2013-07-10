@@ -57,7 +57,9 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 
 ### 1.1.1 ###
 #### Bugfixes ####
-* Fixing styling errors in the readme.txt
+* Fixed styling errors in the readme.txt
+
+***
 
 ### 1.1.0 ###
 #### New Features ####

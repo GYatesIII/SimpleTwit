@@ -83,7 +83,7 @@ This plugin is intended entirely for developers and therefore there's no prebuil
 = 1.1.1 =
 Bugfixes:
 
-* Fixing styling errors on the readme.txt
+* Fixed styling errors in the readme.txt
 
 = 1.1.0 =
 New Features:
