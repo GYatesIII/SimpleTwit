@@ -10,7 +10,7 @@ if (!function_exists('stf_submenu_page'))
 if (!function_exists('stf_options_setup'))
 {
 	function stf_options_setup() {
-		register_setting('stf_options_group', 'stf_twit');
+		register_setting('stf_options_group', 'stf_twit', 'stf_edit_twit');
 		register_setting('stf_options_group', 'stf_auth_creds', 'stf_edit_auth_creds');
 
 		add_settings_section('stf_twits_section', 'Twitter Feeds', 'stf_twits_explain', 'stf-twit-feed');
@@ -35,14 +35,52 @@ if (!function_exists('stf_twits_explain'))
 {
 	// Displays the explanation text for the twitter username
 	function stf_twits_explain() {
-		echo 'The username pulled whose feed we\'re pulling in.';
+		echo 'The username pulled whose feed we\'re pulling in. Changing this may take a while as it rebuilds the database of tweets.';
 	}
 }
 if (!function_exists('stf_twits_fields'))
 {
 	// Displays the username entry and deletion structure
 	function stf_twits_fields() {
-		echo '@<input type="text" value="' . get_option('stf_twit') . '" name="stf_twit" class="regular-text" id="stf_twits_fields">';
+		echo '<input type="hidden" value="' . get_option('stf_twit') . '" name="stf_twit[old]">';
+		echo '@<input type="text" value="' . get_option('stf_twit') . '" name="stf_twit[new]" class="regular-text" id="stf_twits_fields">';
+	}
+}
+if (!function_exists('stf_edit_twit'))
+{
+	//Checks to see if the user has changed, if he has then we rebuild the tweet database
+	function stf_edit_twit($twit) {
+		if (is_string($twit)) return $twit; // Since this function gets called twice, the second time we don't want to run this callback
+
+		if ($twit['old'] !== $twit['new'])
+		{
+			// First we delete the existing tweets and reset the last known tweet record
+			$offset = 0;
+			while (!isset($old_tweets) || !empty($old_tweets))
+			{
+				$args = array(
+					'posts_per_page' => 50,
+					'offset' => $offset,
+					'post_type' => 'stf_tweet',
+					'post_status' => 'any'
+				);
+				$old_tweets = get_posts($args);
+
+				foreach($old_tweets as $old_tweet)
+				{
+					wp_delete_post( $old_tweet->ID, true );
+				}
+
+				$offset += 50;
+			}
+			update_option( 'stf_last_tweet', '0' );
+
+			// Then we run an API pull with the current user
+			update_option( 'stf_twit', $twit['new'] ); // @TODO This is a hack, but we need to run this DB update now so that the import uses the new username, ideally we should have the option to pass the username to the import function
+			stf_import_tweets();
+		}
+
+		return $twit['new'];
 	}
 }
 
