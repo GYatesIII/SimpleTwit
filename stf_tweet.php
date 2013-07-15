@@ -14,6 +14,7 @@ class STF_Tweet {
 	public $is_retweet;
 	public $is_reply;
 	public $content;
+	public $author;
 	public $time;
 	public $time_gmt;
 	public $time_str;
@@ -30,12 +31,14 @@ class STF_Tweet {
 			if ($this->wp_post->post_type !== 'stf_tweet')
 				throw new Exception("This post must be a Tweet. Post ID {$id} is a {$this->wp_post->post_type}");
 
-			$this->raw_tweet = safe_unserialize(get_post_meta($this->wp_id, 'raw_tweet', safe_serialize(array())));
+			$this->raw_tweet = json_decode(json_encode( safe_unserialize( get_post_meta( $this->wp_id, 'raw_tweet', safe_serialize( array() ) ) ) ), false);
 
 			$this->is_retweet = get_post_meta($this->wp_id, 'is_retweet', true) == 1 ? true : false;
 			$this->is_reply= get_post_meta($this->wp_id, 'is_reply', true) == 1 ? true : false;
 
 			$this->content = $this->wp_post->post_content;
+
+			$this->author = $this->raw_tweet->user;
 
 			$this->time = $this->wp_post->post_date;
 			$this->time_gmt = $this->wp_post->post_date_gmt;
