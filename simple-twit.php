@@ -99,7 +99,7 @@ if (!function_exists('stf_import_tweets'))
 	 * Runs every 15 minutes and makes the API call and then passes the response to the function that enters the tweets into the DB
 	 */
 	function stf_import_tweets() {
-		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', 0));
+		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', '0'));
 		if (!empty($raw_tweets) && $raw_tweets !== false)
 			stf_input_tweets($raw_tweets);
 	}
