@@ -125,7 +125,7 @@ Initial release of the plugin
 
 * Database Functions (Delete, Rescrape)
 * Multiple Twitter Streams
-* Reminder when oAuth credentials aren't set
+* Reminder when OAuth credentials aren't set
 * Check to make sure feed can be successfully scraped and throw errors if it's not
 * Define the interval between feed scrapes
 * Allow users to retweet and reply with their own accounts from your site

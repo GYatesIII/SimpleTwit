@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Simple Twit
+Plugin Name: SimpleTwit
 Plugin URI: https://github.com/GYatesIII/SimpleTwit
 Description: A plugin for developers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format tweets correctly without predefined styles to work around.
 Version: 1.1.1
