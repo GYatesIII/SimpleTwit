@@ -12,9 +12,9 @@ License: GPL
 require 'tmhOAuth.php';
 require 'tmhUtilities.php';
 
-if (!function_exists('get_api_tweets'))
+if (!function_exists('stf_get_api_tweets'))
 {
-	function get_api_tweets($args = array()) {
+	function stf_get_api_tweets($args = array()) {
 		$defaults = array(
 			'limit' => 20,
 			'since' => 0,

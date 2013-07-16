@@ -107,7 +107,7 @@ if (!function_exists('stf_import_tweets'))
 		);
 		$args = wp_parse_args($args, $defaults);
 
-		$raw_tweets = get_api_tweets($args);
+		$raw_tweets = stf_get_api_tweets($args);
 		if ($raw_tweets === false)
 		{
 			update_option( 'stf_creds_info', 'error' );
