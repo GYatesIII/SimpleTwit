@@ -61,9 +61,11 @@ class STF_Tweet {
 			$tz_str = 'GMT';
 
 		$tz = new DateTimeZone($tz_str);
-		$time = new DateTime("@" . strtotime($this->time_gmt) . "s");
+		$tz_gmt = new DateTimeZone('GMT');
+
+		$time = new DateTime("@" . strtotime($this->time_gmt) . "s", $tz_gmt);
 		$time->setTimezone($tz);
-		return parseTwitterDate($time->format('Y-m-d H:i:s'));
+		return parseTwitterDate($time->format('Y-m-d H:i:s'), date('Y-m-d H:i:s'));
 	}
 
 	/**
