@@ -99,10 +99,18 @@ if (!function_exists('stf_import_tweets'))
 	/**
 	 * Runs every 15 minutes and makes the API call and then passes the response to the function that enters the tweets into the DB
 	 */
-	function stf_import_tweets() {
+	function stf_import_tweets()
+	{
 		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', '0'));
-		if (!empty($raw_tweets) && $raw_tweets !== false)
+		if ($raw_tweets === false)
+		{
+			update_option( 'stf_creds_info', 'error' );
+		}
+		elseif (!empty($raw_tweets))
+		{
 			stf_input_tweets($raw_tweets);
+			update_option( 'stf_creds_info', 'valid' );
+		}
 	}
 	add_action('stf_tweet_import', 'stf_import_tweets');
 }
@@ -154,7 +162,35 @@ if (!function_exists('stf_input_tweets'))
 	}
 }
 
-if (!function_exists('stf_deactivation'))
+if ( !function_exists('stf_admin_notices') )
+{
+	/**
+	 * Checks the DB to see if there's any problem with the provided OAuth creds and throws admin notices if there are
+	 */
+	function stf_admin_notices()
+	{
+		switch ( get_option('stf_creds_info') )
+		{
+			case 'empty' :
+				?>
+				<div class="updated">
+					<p>Please <a href="<?php echo admin_url( 'options-general.php?page=stf-twit-feed' ); ?>">provide your OAuth credentials</a> for SimpleTwit to function properly.</p>
+				</div>
+				<?php
+				break;
+			case 'error' :
+				?>
+				<div class="error">
+					<p>There was a problem with your OAuth credentials for SimpleTwit. Please <a href="<?php echo admin_url( 'options-general.php?page=stf-twit-feed' ); ?>">check and ensure they are correct</a>.</p>
+				</div>
+				<?php
+				break;
+		}
+	}
+	add_action( 'admin_notices', 'stf_admin_notices' );
+}
+
+if ( !function_exists('stf_deactivation') )
 {
 	/**
 	 * Clearing the Cron on Plugin Deactivation
@@ -183,8 +219,9 @@ if (!function_exists('stf_activation'))
 		add_option('stf_auth_creds', safe_serialize($init_options));
 		add_option('stf_twit', 'GeorgeYatesIII');
 		add_option('stf_last_tweet', 0);
+		add_option('stf_creds_info', 'empty');
 	}
-	register_activation_hook(__FILE__, 'stf_activation');
+	register_activation_hook( __FILE__, 'stf_activation' );
 }
 
 /**
