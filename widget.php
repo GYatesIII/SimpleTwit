@@ -42,7 +42,7 @@ if ( !class_exists('STF_Widget') )
 					</p>
 					<?php endif; ?>
 					<?php if ($show_time) : ?>
-					<time datetime="<?php echo $tweet->time_gmt; ?>" class="tweet-time"><a href="<?php echo $tweet->get_link(); ?>"><?php echo $tweet->get_default_time_str(); ?></a></time>
+					<time datetime="<?php echo $tweet->time_gmt; ?>" class="tweet-time"><a href="<?php echo $tweet->get_link(); ?>"><?php echo $tweet->time_str; ?></a></time>
 					<?php endif; ?>
 					<?php if ($show_author) : ?>
 					<a href="<?php echo $tweet->get_author_link(); ?>" class="tweet-author">@<?php echo $tweet->author->screen_name; ?></a>

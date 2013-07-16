@@ -47,12 +47,12 @@ class STF_Tweet {
 	}
 
 	/**
-	 * Get the time since this tweet in the Wordpress timezone
+	 * Display how long has elapsed since this Tweet in the same format as Twitter
 	 *
 	 * @param string The GMT time represented as a string, if no time is provided, it uses the GMT time of the tweet
 	 * @return string The time since this tweet in the format that Twitter represents it on their site, ex: 5 minutes ago
 	 */
-	public function get_default_time_str($time_gmt = false) {
+	private function get_default_time_str($time_gmt = false) {
 		if ($time_gmt === false)
 			$time_gmt = $this->time_gmt;
 
