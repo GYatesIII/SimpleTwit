@@ -99,9 +99,15 @@ if (!function_exists('stf_import_tweets'))
 	/**
 	 * Runs every 15 minutes and makes the API call and then passes the response to the function that enters the tweets into the DB
 	 */
-	function stf_import_tweets()
+	function stf_import_tweets($args = array())
 	{
-		$raw_tweets = get_api_tweets(array( 'limit' => 0, 'since' => get_option('stf_last_tweet', '0') ));
+		$defaults = array(
+			'limit' => 0,
+			'since' => get_option('stf_last_tweet', '0')
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		$raw_tweets = get_api_tweets($args);
 		if ($raw_tweets === false)
 		{
 			update_option( 'stf_creds_info', 'error' );
