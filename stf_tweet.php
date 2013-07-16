@@ -14,7 +14,6 @@ class STF_Tweet {
 	public $is_retweet;
 	public $is_reply;
 	public $content;
-	public $author;
 	public $time;
 	public $time_gmt;
 	public $time_str;
@@ -37,8 +36,6 @@ class STF_Tweet {
 			$this->is_reply= get_post_meta($this->wp_id, 'is_reply', true) == 1 ? true : false;
 
 			$this->content = $this->wp_post->post_content;
-
-			$this->author = $this->raw_tweet->user;
 
 			$this->time = $this->wp_post->post_date;
 			$this->time_gmt = $this->wp_post->post_date_gmt;
@@ -132,7 +129,16 @@ class STF_Tweet {
 	 * @return string The direct link on Twitter to this tweet
 	 */
 	public function get_link() {
-		return 'https://twitter.com/' . $this->author->screen_name . '/status/' . $this->raw_tweet->id_str;
+		return 'https://twitter.com/' . $this->raw_tweet->user->screen_name . '/status/' . $this->raw_tweet->id_str;
+	}
+
+	/**
+	 * Gets the raw author information from the raw tweet
+	 *
+	 * @return stdClass Author object
+	 */
+	public function get_author() {
+		return $this->raw_tweet->user;
 	}
 
 	/**
@@ -141,6 +147,6 @@ class STF_Tweet {
 	 * @return string The direct link to the author's page
 	 */
 	public function get_author_link() {
-		return 'https://twitter.com/' . $this->author->screen_name;
+		return 'https://twitter.com/' . $this->raw_tweet->user->screen_name;
 	}
 }
