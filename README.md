@@ -101,4 +101,4 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 * Reminder when oAuth credentials aren't set
 * Check to make sure feed can be successfully scraped and throw errors if it's not
 * Define the interval between feed scrapes
-* Ability to retweet and reply with your own account right from site
+* Allow users to retweet and reply with their own accounts right from your site
