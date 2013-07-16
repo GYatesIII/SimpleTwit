@@ -18,16 +18,16 @@ if (!function_exists('stf_get_api_tweets'))
 		$defaults = array(
 			'limit' => 20,
 			'since' => 0,
-			'stf_auth_creds' => safe_unserialize( get_option('stf_auth_creds') ),
+			'auth_creds' => safe_unserialize( get_option('stf_auth_creds') ),
 			'screen_name' => get_option( 'stf_twit' )
 		);
 		$args = wp_parse_args($args, $defaults);
 
 		$config = array(
-			'consumer_key' => $args['stf_auth_creds']['consumer_key'],
-			'consumer_secret' => $args['stf_auth_creds']['consumer_secret'],
-			'user_token' => $args['stf_auth_creds']['user_token'],
-			'user_secret' => $args['stf_auth_creds']['user_secret']
+			'consumer_key' => $args['auth_creds']['consumer_key'],
+			'consumer_secret' => $args['auth_creds']['consumer_secret'],
+			'user_token' => $args['auth_creds']['user_token'],
+			'user_secret' => $args['auth_creds']['user_secret']
 		);
 
 		$auth = new tmhOAuth($config);

@@ -76,8 +76,7 @@ if (!function_exists('stf_edit_twit'))
 			update_option( 'stf_last_tweet', '0' );
 
 			// Then we run an API pull with the current user
-			update_option( 'stf_twit', $twit['new'] ); // @TODO This is a hack, but we need to run this DB update now so that the import uses the new username, ideally we should have the option to pass the username to the import function
-			stf_import_tweets();
+			stf_import_tweets(array('screen_name' => $twit['new']));
 		}
 
 		return $twit['new'];
@@ -127,6 +126,8 @@ if (!function_exists('stf_auth_user_secret'))
 if (!function_exists('stf_edit_auth_creds'))
 {
 	function stf_edit_auth_creds($input) {
+		$old_creds = safe_unserialize(get_option('stf_auth_creds'));
+
 		$defaults = array(
 			'consumer_key' => '',
 			'consumer_secret' => '',
@@ -134,6 +135,11 @@ if (!function_exists('stf_edit_auth_creds'))
 			'user_secret' => ''
 			);
 		$creds = wp_parse_args($input, $defaults);
+
+		if ($creds != $old_creds)
+		{
+			stf_import_tweets(array('auth_creds' => $creds));
+		}
 
 		return safe_serialize($creds);
 	}

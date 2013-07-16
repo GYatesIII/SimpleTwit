@@ -65,8 +65,7 @@ if (!function_exists('stf_get_tweets'))
 			'numberposts' => $args['num'],
 			'offset' => $args['offset'],
 			'meta_query' => $meta_query
-			);
-
+		);
 		$raw_tweets = get_posts($post_args);
 
 		$tweets = array();
@@ -112,10 +111,14 @@ if (!function_exists('stf_import_tweets'))
 		{
 			update_option( 'stf_creds_info', 'error' );
 		}
-		elseif (!empty($raw_tweets))
+		else
+		{
+			update_option( 'stf_creds_info', 'valid' );
+		}
+
+		if (!empty($raw_tweets))
 		{
 			stf_input_tweets($raw_tweets);
-			update_option( 'stf_creds_info', 'valid' );
 		}
 	}
 	add_action('stf_tweet_import', 'stf_import_tweets');
