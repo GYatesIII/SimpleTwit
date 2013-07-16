@@ -77,13 +77,13 @@ class STF_Tweet {
 		if ($this->is_retweet) {
 			$info = new stdClass();
 
-			$retweet = $this->raw_tweet['retweeted_status'];
+			$retweet = $this->raw_tweet->retweeted_status;
 
-			$info->username = $retweet['user']['name'];
-			$info->screenname = $retweet['user']['screen_name'];
-			$info->content = $retweet['text'];
-			$info->time_gmt = $retweet['created_at'];
-			$info->url = "http://twitter.com/" . $retweet['user']['screen_name'] . "/status/" . $retweet['id'];
+			$info->username = $retweet->user->name;
+			$info->screenname = $retweet->user->screen_name;
+			$info->content = $retweet->text;
+			$info->time_gmt = $retweet->created_at;
+			$info->url = "http://twitter.com/" . $retweet->user->screen_name . "/status/" . $retweet->id;
 			$info->user_url = "http://twitter.com/" . $info->screenname;
 
 			$info->raw_retweet = $retweet;
@@ -103,9 +103,9 @@ class STF_Tweet {
 		if ($this->is_reply) {
 			$info = new stdClass();
 
-			$info->url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'] . "/status/" . $this->raw_tweet['in_reply_to_status_id'];
-			$info->in_reply_to_name = $this->raw_tweet['in_reply_to_screen_name'];
-			$info->in_reply_to_user_url = "http://twitter.com/" . $this->raw_tweet['in_reply_to_screen_name'];
+			$info->url = "http://twitter.com/" . $this->raw_tweet->in_reply_to_screen_name . "/status/" . $this->raw_tweet->in_reply_to_status_id;
+			$info->in_reply_to_name = $this->raw_tweet->in_reply_to_screen_name;
+			$info->in_reply_to_user_url = "http://twitter.com/" . $this->raw_tweet->in_reply_to_screen_name;
 
 			return $info;
 		} else {
