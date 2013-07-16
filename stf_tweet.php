@@ -131,7 +131,16 @@ class STF_Tweet {
 	 *
 	 * @return string The direct link on Twitter to this tweet
 	 */
-	private function get_link() {
-		return 'https://twitter.com/' . $this->raw_tweet['user']['screen_name'] . '/status/' . $this->raw_tweet['id_str'];
+	public function get_link() {
+		return 'https://twitter.com/' . $this->author->screen_name . '/status/' . $this->raw_tweet->id_str;
+	}
+
+	/**
+	 * Gets the direct link to the author of this tweet on Twitter
+	 *
+	 * @return string The direct link to the author's page
+	 */
+	public function get_author_link() {
+		return 'https://twitter.com/' . $this->author->screen_name;
 	}
 }
