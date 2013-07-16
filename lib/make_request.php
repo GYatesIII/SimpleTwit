@@ -14,7 +14,13 @@ require 'tmhUtilities.php';
 
 if (!function_exists('get_api_tweets'))
 {
-	function get_api_tweets($limit = 20, $since = 0) {
+	function get_api_tweets($args) {
+		$defaults = array(
+			'limit' => 20,
+			'since' => 0
+		);
+		$args = wp_parse_args($args, $defaults);
+
 		$stf_auth_creds = safe_unserialize(get_option('stf_auth_creds'));
 
 		$config = array(
@@ -34,13 +40,13 @@ if (!function_exists('get_api_tweets'))
 			'exclude_replies' => 'false'
 		);
 
-		if ($limit != 0)
-			$params['count'] = $limit;
+		if ($args['limit'] != 0)
+			$params['count'] = $args['limit'];
 		else
 			$params['count'] = 199;
 
-		if ($since > 0)
-			$params['since_id'] = $since;
+		if ($args['since'] > 0)
+			$params['since_id'] = $args['since'];
 
 		$auth->request($method, $url, $params);
 

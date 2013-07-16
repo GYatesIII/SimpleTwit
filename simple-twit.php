@@ -101,7 +101,7 @@ if (!function_exists('stf_import_tweets'))
 	 */
 	function stf_import_tweets()
 	{
-		$raw_tweets = get_api_tweets(0, get_option('stf_last_tweet', '0'));
+		$raw_tweets = get_api_tweets(array( 'limit' => 0, 'since' => get_option('stf_last_tweet', '0') ));
 		if ($raw_tweets === false)
 		{
 			update_option( 'stf_creds_info', 'error' );
