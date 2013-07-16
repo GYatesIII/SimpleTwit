@@ -28,6 +28,7 @@ require_once 'lib/stf-tweet-post-type.php';
 require_once 'lib/make_request.php';
 require_once 'options-page.php';
 require_once 'stf_tweet.php';
+require_once 'widget.php';
 
 if (!function_exists('stf_get_tweets'))
 {
