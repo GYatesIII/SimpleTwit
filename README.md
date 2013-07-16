@@ -1,59 +1,100 @@
 # SimpleTwit #
 
-A plugin for developers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format tweets correctly without predefined styles to work around.
+A plugin for developers and designers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format Tweets correctly without predefined styles to work around. For designers, the plugin creates a widget that can be used to easily display and style Tweets in your theme.
 
 ## Features ##
-* Define Username and Application info
-* Pulls in and designates retweets and replies
+* Provides access to a user's Tweets for both designers and developers
+* Creates a widget for easy display of the latest Tweets in your theme's sidebar
+* Clearly designates Retweets and Replies to allow easy styling and manipulation
+* Easily set Username and OAuth credentials
 * Caches Tweets to prevent rate limiting problems
-* Hooks into WP_Cron for easy installation
-* Uses OAuth and the v1.1 REST API
+* Hooks into WP_Cron for easy installation and automatic API calls
+* Uses OAuth and the v1.1 Twitter REST API
 
-## Instructions ##
+## Installation ##
+1. Upload `SimpleTwit` to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Go to Twitter's Developer Center](https://dev.twitter.com/) and setup your Twitter app to get your OAuth credentials
+4. Add in your OAuth credentials through Settings >> Twitter Feed
+5. The plugin will scrape the API right away and let you know if there were any problems with the information provided
 
-### Installation ###
-* After installing the plugin, add in your OAuth Credentials through Settings >> Twitter Feed
-* Every fifteen minutes, the WP_Cron will scrape your designated user's feed and add them automatically to the feed
+## Usage ##
 
-### Usage ###
-The plugin provides a number of useful functions. First, we'll look at the STF_Tweet object:
+There are two main ways to access the Tweets, one aimed at developers and one aimed at designers.
+
+### For Designers ###
+
+This plugin creates a widget that allows display of the most recent Tweets in any sidebar in your theme. When adding the widget you can customize how many Tweets and what information is displayed, choosing from content, time, author, and source. The widget outputs HTML5 which with classes to style on every element, including flagging Tweets as Retweets and Replies. You will be able to style this widget to look exactly as you need it it to.
+
+### For Developers ###
+
+For those with something special in mind and willing to get their hands dirty, this plugin provides powerful access to the DB of Tweets. Tweets can be grabbed through a template tag and are provided in a special object jam packed with features:
 
 #### `STF_Tweet` ####
-This object replaces the WP_Post object and provides a number of useful methods when working with tweets. This object can be created by
-constructing a new STF_Tweet and passing it the WP Post ID of a Tweet. `$tweet = new STF_Tweet($id)` Generally though, this will be done for you
-with the `stf_get_tweets()` function. This object has the following accessible properties:
-* `is_retweet` - This boolean will be `true` when the tweet is a retweet
-* `is_reply` - This boolean will be `true` when the tweet is a reply to another tweet
-* `content` - The content of the tweet, this will be automatically formatted to link other referenced Twitter users, hashtags, and inline links
-* `time` - A timestamp of the tweet, timezoned to the WP install, in Y-m-d H:i:s format
-* `time_gmt` - A timestamp of the tweet, timezoned to GMT, in Y-m-d H:i:s format
-* `time_str` - The string that represents how long it's been since the tweet, in the way that Twitter usually dates its Tweets, good for an international audience since this isn't timezone specicific
+
+An array of these objects is returned by the template tag instead of the `WP_Post` object, or an individual can be constructed by passing the post ID of the Tweet to the object constructor.
+
+The object provides a number of useful methods when working with Tweets. This object has the following accessible properties:
+
+* `is_retweet` - This boolean will be `true` when the Tweet is a Retweet
+* `is_reply` - This boolean will be `true` when the Tweet is a Reply to another Tweet
+* `content` - The content of the Tweet, this will be automatically formatted to link other referenced Twitter users, hashtags, and inline links
+* `time` - A timestamp of the Tweet, timezoned to the WP install, in Y-m-d H:i:s format
+* `time_gmt` - A timestamp of the Tweet, timezoned to GMT, in Y-m-d H:i:s format
+* `time_str` - The string that represents how long it's been since the Tweet, in the way that Twitter usually dates its Tweets, good for an international audience since this isn't timezone specicific
 
 The object has the following methods:
-* `get_default_time_str($time)` - This method will return a Twitter formatted how long since `$time`, where `$time` is a string representing a GMT timezoned date time
-* `get_source()` - This method returns the string representing the device used to Tweet this status
-* `get_raw_tweet()` - This method returns the raw response from the API, this should only be rarely needed
-* `get_retweet_info()` - This method will return the info on the original tweet of a retweet, or false if the tweet is not a retweet, the object returned contains:
-* * `username` - The Twitter username of the original Tweet
-* * `screenname` - The Twitter screenname of the original Tweet
-* * `content` - The _unformatted_ content of the original Tweet
-* * `time_gmt` - The GMT time of the retweet
-* * `url` - A direct link to the original tweet
-* * `user_url` - A direct link to the profile of the original Twitter user
-* `get_reply_info()` - This method will return the info on the original status that this tweet is replying to, the info is as follows:
-* * `url` - The direct link to the original status
-* * `in_reply_to_name` - The screenname of the original Twitter user
-* * `in_reply_to_user_url` - The direct link to the original Twitter user's profile
+
+* `get_source()` - Returns the string representing the device used to Tweet this status
+* `get_raw_tweet()` - Returns the cached raw response from the API as an object, this should rarely be used as almost all information on the Tweet is accessible without loading this object
+* `get_author_link()` - Returns a string that is the link to the Tweet's author's page on Twitter
+* `get_retweet_info()` - Returns the info on the original Tweet of a Retweet, or false if the Tweet is not a Retweet, the object returned contains:
+  * `username` - The Twitter username of the original Tweet
+  * `screenname` - The Twitter screenname of the original Tweet
+  * `content` - The _unformatted_ content of the original Tweet
+  * `time_gmt` - The GMT time of the Retweet
+  * `url` - A direct link to the original Tweet
+  * `user_url` - A direct link to the profile of the original Twitter user
+* `get_reply_info()` - Returns the info on the original status that this Tweet is replying to, the info is as follows:
+  * `url` - The direct link to the original status
+  * `in_reply_to_name` - The screenname of the original Twitter user
+  * `in_reply_to_user_url` - The direct link to the original Twitter user's profile
+* `get_author_info()` - Gets the raw object response from the Twitter API scrape, there are a lot of variables in the raw object, but here's the main attributes:
+  * `id_str` - The id of the user
+  * `name` - The nice name of the author account
+  * `screen_name` - The username of the author account
+  * `description` - The self-provided description of the author on Twitter
+  * `created_at` - The creation date of the Twitter author account
+  * `profile_image_url` - Link to the profile image of the Twitter author account
+  * `profile_image_url_https` - Secure link to the profile image of the Twitter author account
 
 #### `stf_get_tweets($args)` ####
 This will be the main function used to get Tweets from the DB. This function takes an array of parameters as follows:
+
 * `$args['num']` - This tells us how many Tweets to get from the DB, defaults to 5
 * `$args['offset']` - This tells us how many Tweets to skip over when selecting our Tweets, defaults to 0
-* `$args['retweets']` - This tells us whether or not to get retweets, defaults to `true`
-* `$args['replies']` - This tells us whether or not to get replies, defaults to `true`
+* `$args['retweets']` - This tells us whether or not to get Retweets, defaults to `true`
+* `$args['replies']` - This tells us whether or not to get Replies, defaults to `true`
 This function returns an array of STF_Tweet objects, the use of these objects is described above
 
 ## Changelog ##
+
+### 1.2.0 ###
+#### New Features ####
+* Added a widget that uses the DB information to display most recent Tweets
+* Now when the username is changed, it deletes all the Tweets and rescrapes Twitter using the new username
+* When the OAuth credentials are changed, it runs an import to check if the new credentials are valid
+* Added admin notices for incomplete or erroneous OAuth credentials
+
+#### Feature Updates ####
+* Added in `STF_Tweet->get_author()` method to provide detailed information on the Tweet's author
+* Changed `STF_Tweet->get_raw_tweet()` to return an object instead of associative array
+* Added in `STF_Tweet->get_author_link()` to get the direct link to the Tweet author's page
+
+#### Bugfixes ####
+* Fixed a bug where the time string was not adjusting for timezone differences and causing funky time reporting
+
+***
 
 ### 1.1.1 ###
 #### Bugfixes ####
@@ -70,12 +111,12 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 
 ### 1.0.0 ###
 #### New Features ####
-* Added in option to offset the tweets returned by `stf_get_tweets()`
+* Added in option to offset the Tweets returned by `stf_get_tweets()`
 * Added in `get_tweet_link()` method to `STF_Tweet` object to return the direct link to status
 * Added in documentation of the usage of the plugin in the README and in the code
 
 #### Feature Updates ####
-* Added in a check on the API call that verified the tweet was not already in the DB before adding
+* Added in a check on the API call that verified the Tweet was not already in the DB before adding
 * Modified some of the DateTime code to make the plugin compatible with PHP 5.2
 * Modified the `stf_get_tweets()` function so that it takes a single array of parameters argument rather than a list of arugments
 * Namespaced the entire plugin to use `stf_` instead of no namespacing or `st_`
@@ -85,7 +126,7 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 #### Bugfixes ####
 * Fixed an issue with the default WP timezone returning an invalid timezone string for PHP
 * Fixed an error that was entering a failed call to the Twitter API into the DB
-* Fixed an error that was causing tweets to import twice
+* Fixed an error that was causing Tweets to import twice
 * Fixed an error with the Status IDs if the DB was running on a 32 bit machine
 * Fixed an issue where a Notice was being thrown by the lack of apostrophes around a string
 * Fixed the description of username entry to be more clear that only one user can be entered and to not include the @
@@ -95,10 +136,9 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 ### RC1 ###
 * The initial release of the plugin.
 
-## Further Development Ideas ##
+## Future Development ##
 * Database Functions (Delete, Rescrape)
 * Multiple Twitter Streams
-* Reminder when OAuth credentials aren't set
-* Check to make sure feed can be successfully scraped and throw errors if it's not
 * Define the interval between feed scrapes
-* Allow users to retweet and reply with their own accounts right from your site
+* Allow users to Retweet and Reply with their own accounts right from your site
+* Add in shortcode support for recent Tweet display
