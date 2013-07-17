@@ -1,6 +1,6 @@
 # SimpleTwit #
 
-A plugin for developers and designers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format Tweets correctly without predefined styles to work around. For designers, the plugin creates a widget that can be used to easily display and style Tweets in your theme.
+A plugin for developers and designers that sets up a WP_Cron to pull in and cache a user's stream using OAuth and the Twitter v1.1 REST API. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format Tweets correctly without predefined styles to work around. For designers, the plugin creates a widget that can be used to easily display and style Tweets in your theme.
 
 ## Features ##
 * Provides access to a user's Tweets for both designers and developers
