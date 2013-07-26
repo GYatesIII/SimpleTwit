@@ -3,7 +3,7 @@
 Plugin Name: SimpleTwit
 Plugin URI: https://github.com/GYatesIII/SimpleTwit
 Description: A plugin for developers and designers that sets up a WP_Cron to pull in and cache a user's stream. It's all that a developer needs to incorporate a Twitter feed on their site, the OAuth handling, caching to avoid rate limiting, and utilities to easily format Tweets correctly without predefined styles to work around. For designers, the plugin creates a widget that can be used to easily display and style Tweets in your theme.
-Version: 1.2.0
+Version: 1.2.1
 Author: George Yates
 Author URI: http://www.georgeyatesiii.com
 License: GPL2

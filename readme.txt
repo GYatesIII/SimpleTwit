@@ -105,6 +105,12 @@ This plugin is intended entirely for developers and therefore there's no prebuil
 
 == Changelog ==
 
+### 1.2.1 ###
+#### Bugfixes ####
+* Fixed a bug with the time string not handling time zones correctly and displaying the wrong information
+
+***
+
 ### 1.2.0 ###
 #### New Features ####
 * Added a widget that uses the DB information to display most recent Tweets
