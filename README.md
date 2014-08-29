@@ -79,6 +79,10 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 
 ## Changelog ##
 
+### 1.2.2 ###
+#### Bugfixes ####
+* Fixed bug that was precenting Tweets from pulling through WP_Cron
+
 ### 1.2.1 ###
 #### Bugfixes ####
 * Fixed a bug with the time string not handling time zones correctly and displaying the wrong information
@@ -141,6 +145,10 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 
 ### RC1 ###
 * The initial release of the plugin.
+
+## Contributors ##
+* [George Yates III](https://github.com/GYatesIII)
+* [alexsomeoddpilot](https://github.com/alexsomeoddpilot)
 
 ## Future Development ##
 * Database Functions (Delete, Rescrape)
