@@ -536,7 +536,7 @@ class tmhOAuth {
    * @param string $header the response headers
    * @return string the length of the header
    */
-  private function curlHeader($ch, $header) {
+  public function curlHeader($ch, $header) {
     $this->response['raw'] .= $header;
 
     list($key, $value) = array_pad(explode(':', $header, 2), 2, null);
