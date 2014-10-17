@@ -79,6 +79,10 @@ This function returns an array of STF_Tweet objects, the use of these objects is
 
 ## Changelog ##
 
+### 1.3 ###
+#### Feature Updates ####
+* Added in support for Twitter's $ (Cash) tag
+
 ### 1.2.2 ###
 #### Bugfixes ####
 * Fixed bug that was precenting Tweets from pulling through WP_Cron

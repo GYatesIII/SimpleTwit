@@ -4,7 +4,7 @@ Donate link:
 Tags: twitter feed, developer, designer, widget, simple, oauth, caching, cache, twitter, feed, template tag
 Requires at least: 3.3
 Tested up to: 3.5.2
-Stable tag: 1.2.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,10 @@ This plugin is intended entirely for developers and therefore there's no prebuil
 3. Options for the widget in the admin area
 
 == Changelog ==
+
+### 1.3 ###
+#### Feature Updates ####
+* Added in support for Twitter's $ (Cash) tag
 
 ### 1.2.2 ###
 #### Bugfixes ####

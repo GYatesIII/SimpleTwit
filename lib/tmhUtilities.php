@@ -78,6 +78,9 @@ class tmhUtilities {
             $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
             $href = "<a href=\"{$value['url']}\"{$target}>{$display}</a>";
             break;
+          case 'symbols':
+            $href = "<a href=\"https://twitter.com/search?q=%24{$value['text']}&src=ctag\" title=\"{$value['text']}\">\${$value['text']}</a>";
+            break;
         }
         $keys[$value['indices']['0']] = mb_substr(
           $tweet['text'],
